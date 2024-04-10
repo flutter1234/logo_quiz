@@ -96,12 +96,12 @@ class _logo_category_screenState extends State<logo_category_screen> {
             Expanded(
               child: GridView.builder(
                 itemCount: data['logoData'].length,
-                padding: EdgeInsets.only(left: 5.w, right: 5.w, bottom: 15.h),
+                padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 15.h),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  mainAxisExtent: 110.sp,
-                  mainAxisSpacing: 8.sp,
-                  crossAxisSpacing: 8.sp,
+                  mainAxisExtent: 100.sp,
+                  mainAxisSpacing: 15.sp,
+                  crossAxisSpacing: 15.sp,
                 ),
                 itemBuilder: (context, index) {
                   return GestureDetector(
@@ -117,11 +117,18 @@ class _logo_category_screenState extends State<logo_category_screen> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: HexColor('3271a5'),
+                            spreadRadius: 2,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
                         border: Border.all(width: 1.w, color: Colors.white),
-                        borderRadius: BorderRadius.circular(8.r),
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(7.r),
+                        borderRadius: BorderRadius.circular(9.r),
                         child: CachedNetworkImage(
                           imageUrl: data['logoData'][index]['thumbnail'],
                           fit: BoxFit.fill,

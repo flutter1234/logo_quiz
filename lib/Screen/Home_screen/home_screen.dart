@@ -19,7 +19,6 @@ class _home_screenState extends State<home_screen> {
   @override
   Widget build(BuildContext context) {
     Api dataProvider = Provider.of<Api>(context, listen: true);
-
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(top: 50.h),
@@ -87,16 +86,14 @@ class _home_screenState extends State<home_screen> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 15.h,
-            ),
+            SizedBox(height: 15.h),
             Expanded(
               child: ListView.builder(
                 itemCount: dataProvider.wordList['word'].length,
                 padding: EdgeInsets.only(top: 15.h),
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
+                    padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 8.sp),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.pushNamed(
@@ -118,7 +115,14 @@ class _home_screenState extends State<home_screen> {
                               HexColor('46a2da'),
                             ],
                           ),
-                          border: Border.all(width: 1.w, color: Colors.white70),
+                          boxShadow: [
+                            BoxShadow(
+                              color: HexColor('3271a5'),
+                              spreadRadius: 2,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                          border: Border.all(width: 0.3.w, color: Colors.white70),
                           borderRadius: BorderRadius.circular(5.r),
                         ),
                         child: Row(

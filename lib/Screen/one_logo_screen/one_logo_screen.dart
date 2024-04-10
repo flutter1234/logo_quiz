@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -43,6 +45,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
       ansList.add(anstemp);
       correctList.add(temp);
     });
+
     print("correctList ==>>>${correctList}");
     rn = random.nextInt(23);
     letterShuffle.add(alphabet[rn]);
@@ -52,9 +55,24 @@ class _one_logo_screenState extends State<one_logo_screen> {
     super.initState();
   }
 
+  bool areAllWordsComplete() {
+    for (int i = 0; i < ansList.length; i++) {
+      for (int j = 0; j < ansList[i].length; j++) {
+        if (ansList[i][j]['ans'] == "") {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final oneData = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    // print(ansList);
+    // print(correctList);
+    // print(areAllWordsComplete());
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(top: 50.h),
@@ -130,31 +148,105 @@ class _one_logo_screenState extends State<one_logo_screen> {
             SizedBox(
               height: 25.h,
             ),
-            Container(
-              height: 200.sp,
-              width: 200.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.r),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(7.r),
-                child: CachedNetworkImage(
-                  imageUrl: oneData['oneLogo']['thumbnail'],
-                  fit: BoxFit.cover,
-                  errorWidget: (context, url, error) => Icon(
-                    Icons.error,
-                    size: 25.sp,
-                    color: Colors.white,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.sp),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    clipBehavior: Clip.none,
+                    children: [
+                      SizedBox(
+                        width: 25.w,
+                        child: ListView.builder(
+                          itemCount: 5,
+                          shrinkWrap: true,
+                          padding: EdgeInsets.only(top: 20.h),
+                          itemBuilder: (context, index) {
+                            return Container(
+                              height: 35.sp,
+                              decoration: BoxDecoration(
+                                color: HexColor('4A148C'),
+                                border: Border.all(width: 1.w, color: Colors.grey.shade400),
+                                borderRadius: index == 0
+                                    ? BorderRadius.only(
+                                        topLeft: Radius.circular(8.r),
+                                        topRight: Radius.circular(8.r),
+                                      )
+                                    : index == 4
+                                        ? BorderRadius.only(
+                                            bottomLeft: Radius.circular(8.r),
+                                            bottomRight: Radius.circular(8.r),
+                                          )
+                                        : BorderRadius.circular(0),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        bottom: -18.h,
+                        child: Container(
+                          height: 32.sp,
+                          width: 32.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            border: Border.all(
+                              width: 1.5.w,
+                              color: Colors.red,
+                            ),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(2.sp),
+                                child: Image.asset("assets/images/heart.png"),
+                              ),
+                              Text(
+                                "5",
+                                style: GoogleFonts.lexend(
+                                  fontSize: 12.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  placeholder: (context, url) => Container(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2.w,
+                  Container(
+                    height: 170.sp,
+                    width: 170.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.r),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(7.r),
+                      child: CachedNetworkImage(
+                        imageUrl: oneData['oneLogo']['thumbnail'],
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => Icon(
+                          Icons.error,
+                          color: Colors.white,
+                          size: 25.sp,
+                        ),
+                        placeholder: (context, url) => Container(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.w,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
             SizedBox(height: 20.h),
@@ -178,20 +270,24 @@ class _one_logo_screenState extends State<one_logo_screen> {
                             if (ansList[wordIndex][letterIndex]['ans'] != "") {
                               letterShuffle[ansList[wordIndex][letterIndex]['index']] = ansList[wordIndex][letterIndex]['ans'];
                               filledAns.remove(ansList[wordIndex][letterIndex]['index']);
-
                               ansList[wordIndex][letterIndex]['ans'] = "";
                               ansList[wordIndex][letterIndex]['index'] = 0;
                             }
                             setState(() {});
                           },
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 1.sp),
+                            padding: EdgeInsets.symmetric(horizontal: 2.sp),
                             child: Container(
                               width: 30.w,
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(width: 1.w, color: Colors.black),
-                                borderRadius: BorderRadius.circular(1.w),
+                                color: areAllWordsComplete()
+                                    ? ansList[wordIndex][letterIndex]['ans'] == correctList[wordIndex][letterIndex]
+                                        ? Colors.green
+                                        : ansList[wordIndex][letterIndex]['ans'] == ""
+                                            ? Colors.white70
+                                            : Colors.red
+                                    : Colors.white70,
+                                borderRadius: BorderRadius.circular(3.r),
                               ),
                               child: Center(
                                 child: Text(
