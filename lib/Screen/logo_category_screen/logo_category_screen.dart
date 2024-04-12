@@ -47,45 +47,94 @@ class _logo_category_screenState extends State<logo_category_screen> {
                       ),
                     ),
                   ),
-                  Container(
-                    height: 30.sp,
-                    width: 100.w,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1.w, color: HexColor('0096C7')),
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(5.r),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5.sp),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "100",
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        height: 30.sp,
+                        width: 100.w,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2.w, color: HexColor('0096C7')),
+                          color: Colors.black54,
+                          borderRadius: BorderRadius.circular(5.r),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "50",
                             style: GoogleFonts.lexend(
                               fontSize: 20.sp,
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          Container(
-                            height: 20.sp,
-                            width: 20.w,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5.r),
-                              color: Colors.green,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.add,
-                                size: 18.sp,
-                                color: Colors.black,
-                              ),
-                            ),
-                          )
-                        ],
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        left: -14.w,
+                        child: Image(
+                          height: 30.sp,
+                          image: AssetImage(
+                            'assets/images/star.png',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        height: 30.sp,
+                        width: 100.w,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2.w, color: HexColor('0096C7')),
+                          color: Colors.black54,
+                          borderRadius: BorderRadius.circular(5.r),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5.sp),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Spacer(),
+                              Text(
+                                "100",
+                                style: GoogleFonts.lexend(
+                                  fontSize: 20.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Spacer(),
+                              Container(
+                                height: 20.sp,
+                                width: 20.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.r),
+                                  color: Colors.green,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 18.sp,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: -14.w,
+                        child: Image(
+                          height: 30.sp,
+                          image: AssetImage(
+                            'assets/images/coin.png',
+                          ),
+                        ),
+                      ),
+                    ],
                   )
                 ],
               ),
