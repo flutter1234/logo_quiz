@@ -1,20 +1,26 @@
 import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:logo_quiz/Provider/api_provider.dart';
 import 'package:logo_quiz/main.dart';
+import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 
 class one_logo_screen extends StatefulWidget {
   static const routeName = '/one_logo_screen';
   final oneData;
+  final index;
+  final length;
 
-  const one_logo_screen({super.key, this.oneData});
+  const one_logo_screen({super.key, this.oneData, this.index, this.length});
 
   @override
   State<one_logo_screen> createState() => _one_logo_screenState();
 }
+
 class _one_logo_screenState extends State<one_logo_screen> {
   List wordList = [];
   List letterShuffle = [];
@@ -26,17 +32,28 @@ class _one_logo_screenState extends State<one_logo_screen> {
   List filledAns = [];
   List boolList = [];
   bool logoIsComplete = false;
+  int lifeLine = 5;
+  int wordIn = 0;
+  int letterIn = 0;
+  List completeLogo = [];
 
   @override
   void initState() {
+    Api dataProvider = Provider.of<Api>(context, listen: false);
+
     List ansList2 = [];
+
     ansList = storage.read(widget.oneData['name']) ?? [];
     logoIsComplete = storage.read("BOOL-${widget.oneData['name']}") ?? false;
+    filledAns = storage.read("filledAns-${widget.oneData['name']}") ?? [];
+    lifeLine = storage.read("lifeLine-${widget.oneData['name']}") ?? 5;
+    completeLogo = storage.read("LEVEL ${widget.index}") ?? [];
+    dataProvider.coin = storage.read("coin") ?? 0;
+    dataProvider.star = storage.read("star") ?? 0;
     for (var letters in widget.oneData['name'].split(' ')) {
       wordList.add(letters);
     }
-    print("wordList =====>>>>${wordList}");
-
+    // print("wordList =====>>>>${wordList}");
     wordList.forEach((element) {
       List temp = [];
       List anstemp = [];
@@ -52,15 +69,39 @@ class _one_logo_screenState extends State<one_logo_screen> {
       boolList.add(boolTemp);
     });
     ansList.isEmpty ? ansList = ansList2 : null;
-    print("ansList ==>>${ansList}");
-    print("boolList =====>>${boolList}");
-    print("correctList ==>>>${correctList}");
+    // print("ansList ==>>${ansList}");
+    // print("boolList =====>>${boolList}");
+    // print("correctList ==>>>${correctList}");
     rn = random.nextInt(23);
     letterShuffle.add(alphabet[rn]);
     letterShuffle.add(alphabet[rn + 1]);
     letterShuffle.add(alphabet[rn + 2]);
     letterShuffle.shuffle();
+
+    initializeLifelines();
+
     super.initState();
+  }
+
+  void initializeLifelines() {
+    DateTime currentDate = DateTime.now();
+    // print("currentDate ======>>${currentDate}");
+    DateTime? storedDate = storage.read('lastDate') != null ? DateTime.parse(storage.read('lastDate')) : null;
+    // print("storedDate ======>>${storedDate}");
+
+    if (storedDate == null || storedDate.year != currentDate.year || storedDate.month != currentDate.month || storedDate.day != currentDate.day) {
+      if (currentDate != storedDate) {
+        storage.write('lifeLine-${widget.oneData['name']}', 5);
+      }
+      storage.write('lastDate', currentDate.toIso8601String());
+      setState(() {
+        lifeLine = 5;
+      });
+    } else {
+      setState(() {
+        lifeLine = storage.read('lifeLine-${widget.oneData['name']}') ?? 5;
+      });
+    }
   }
 
   bool areAllWordsComplete() {
@@ -84,10 +125,9 @@ class _one_logo_screenState extends State<one_logo_screen> {
   @override
   Widget build(BuildContext context) {
     final oneData = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    // print(ansList);
-    // print(correctList);
-    // print(areAllWordsComplete());
+    Api dataProvider = Provider.of<Api>(context, listen: true);
     return Scaffold(
+      backgroundColor: dataProvider.backGround,
       body: Padding(
         padding: EdgeInsets.only(top: 50.h),
         child: Stack(
@@ -107,14 +147,15 @@ class _one_logo_screenState extends State<one_logo_screen> {
                           height: 30.sp,
                           width: 30.w,
                           decoration: BoxDecoration(
-                            border: Border.all(width: 0.8.w, color: Colors.black54),
-                            color: HexColor('0096C7'),
+                            border: Border.all(width: 1.w, color: Colors.white),
+                            // color: HexColor('0096C7'),
+                            color: dataProvider.levelContainer2,
                             borderRadius: BorderRadius.circular(5.r),
                           ),
                           child: Icon(
                             Icons.arrow_back,
                             size: 22.sp,
-                            color: HexColor('023E8A'),
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -125,13 +166,13 @@ class _one_logo_screenState extends State<one_logo_screen> {
                             height: 30.sp,
                             width: 100.w,
                             decoration: BoxDecoration(
-                              border: Border.all(width: 2.w, color: HexColor('0096C7')),
+                              border: Border.all(width: 1.w, color: Colors.white),
                               color: Colors.black54,
                               borderRadius: BorderRadius.circular(5.r),
                             ),
                             child: Center(
                               child: Text(
-                                "50",
+                                "${dataProvider.star}",
                                 style: GoogleFonts.lexend(
                                   fontSize: 20.sp,
                                   color: Colors.white,
@@ -158,7 +199,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
                             height: 30.sp,
                             width: 100.w,
                             decoration: BoxDecoration(
-                              border: Border.all(width: 2.w, color: HexColor('0096C7')),
+                              border: Border.all(width: 1.w, color: Colors.white),
+                              // border: Border.all(width: 2.w, color: HexColor('0096C7')),
                               color: Colors.black54,
                               borderRadius: BorderRadius.circular(5.r),
                             ),
@@ -169,7 +211,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                 children: [
                                   Spacer(),
                                   Text(
-                                    "100",
+                                    "${dataProvider.coin}",
                                     style: GoogleFonts.lexend(
                                       fontSize: 20.sp,
                                       color: Colors.white,
@@ -210,8 +252,19 @@ class _one_logo_screenState extends State<one_logo_screen> {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10.h),
+                  child: Text(
+                    "LEVEL ${widget.index}",
+                    style: GoogleFonts.lexend(
+                      fontSize: 25.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
                 SizedBox(
-                  height: 25.h,
+                  height: 10.h,
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 25.w, right: 8.w),
@@ -224,21 +277,24 @@ class _one_logo_screenState extends State<one_logo_screen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15.r),
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(7.r),
-                          child: CachedNetworkImage(
-                            imageUrl: oneData['oneLogo']['thumbnail'],
-                            fit: BoxFit.cover,
-                            errorWidget: (context, url, error) => Icon(
-                              Icons.error,
-                              color: Colors.white,
-                              size: 25.sp,
-                            ),
-                            placeholder: (context, url) => Container(
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2.w,
+                        child: Screenshot(
+                          controller: dataProvider.screenshotController,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(7.r),
+                            child: CachedNetworkImage(
+                              imageUrl: oneData['oneLogo']['thumbnail'],
+                              fit: BoxFit.fill,
+                              errorWidget: (context, url, error) => Icon(
+                                Icons.error,
+                                color: Colors.white,
+                                size: 25.sp,
+                              ),
+                              placeholder: (context, url) => Container(
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2.w,
+                                  ),
                                 ),
                               ),
                             ),
@@ -283,9 +339,9 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                       ansList[wordIndex][letterIndex]['index'] = 0;
                                     }
                                   }
-
                                   setState(() {});
                                   storage.write(widget.oneData['name'], ansList);
+                                  storage.write("filledAns-${widget.oneData['name']}", filledAns);
                                 },
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 2.sp),
@@ -340,7 +396,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                             width: 40.w,
                             decoration: BoxDecoration(
                               // color: HexColor('4A148C'),
-                              color: Colors.green.shade700,
+                              color: lifeLine <= index ? Colors.red : Colors.green.shade700,
                               border: Border.all(width: 1.w, color: Colors.grey.shade400),
                               borderRadius: index == 0
                                   ? BorderRadius.only(
@@ -389,7 +445,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                               child: Image.asset("assets/images/heart.png"),
                             ),
                             Text(
-                              "5",
+                              "${lifeLine}",
                               style: GoogleFonts.lexend(
                                 fontSize: 12.sp,
                                 color: Colors.white,
@@ -410,28 +466,21 @@ class _one_logo_screenState extends State<one_logo_screen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          if (areAllWordsComplete()) {
-                            for (int i = 0; i < ansList.length; i++) {
-                              for (int j = 0; j < ansList[i].length; j++) {
+                          for (int i = 0; i < ansList.length; i++) {
+                            for (int j = 0; j < ansList[i].length; j++) {
+                              if (correctList[i][j] != ansList[i][j]['ans']) {
                                 if (ansList[i][j]['ans'] != correctList[i][j]) {
                                   filledAns.remove(ansList[i][j]['index']);
                                   ansList[i][j]['index'] = 0;
                                   ansList[i][j]['ans'] = "";
                                 }
-                                setState(() {});
                               }
-                            }
-                          } else {
-                            for (int i = 0; i < ansList.length; i++) {
-                              for (int j = 0; j < ansList[i].length; j++) {
-                                filledAns = [];
-                                ansList[i][j]['index'] = 0;
-                                ansList[i][j]['ans'] = "";
-                                setState(() {});
-                              }
+                              setState(() {});
                             }
                           }
+
                           storage.write(widget.oneData['name'], ansList);
+                          storage.write("filledAns-${widget.oneData['name']}", filledAns);
                         },
                         child: Container(
                           height: 40.sp,
@@ -439,7 +488,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                           decoration: BoxDecoration(
                             border: Border.all(width: 1.w, color: Colors.white),
                             borderRadius: BorderRadius.circular(5.r),
-                            color: HexColor('4169E1'),
+                            color: dataProvider.levelContainer2,
                           ),
                           child: Icon(
                             Icons.close,
@@ -452,17 +501,21 @@ class _one_logo_screenState extends State<one_logo_screen> {
                         onTap: () {
                           for (int i = ansList.length - 1; i >= 0; i--) {
                             for (int j = ansList[i].length - 1; j >= 0; j--) {
-                              if (ansList[i][j]['ans'].isNotEmpty) {
-                                letterShuffle[ansList[i][j]['index']] = ansList[i][j]['ans'];
-                                filledAns.remove(ansList[i][j]['index']);
-                                ansList[i][j]['ans'] = "";
-                                ansList[i][j]['index'] = 0;
-                                setState(() {});
-                                return;
+                              if (correctList[i][j] != ansList[i][j]['ans']) {
+                                if (ansList[i][j]['ans'].isNotEmpty) {
+                                  letterShuffle[ansList[i][j]['index']] = ansList[i][j]['ans'];
+                                  filledAns.remove(ansList[i][j]['index']);
+                                  ansList[i][j]['ans'] = "";
+                                  ansList[i][j]['index'] = 0;
+                                  setState(() {});
+                                  return;
+                                }
                               }
                             }
                           }
+
                           storage.write(widget.oneData['name'], ansList);
+                          storage.write("filledAns-${widget.oneData['name']}", filledAns);
                         },
                         child: Container(
                           height: 40.sp,
@@ -470,7 +523,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                           decoration: BoxDecoration(
                             border: Border.all(width: 1.w, color: Colors.white),
                             borderRadius: BorderRadius.circular(5.r),
-                            color: HexColor('4169E1'),
+                            color: dataProvider.levelContainer2,
                           ),
                           child: Icon(
                             Icons.replay_rounded,
@@ -481,38 +534,98 @@ class _one_logo_screenState extends State<one_logo_screen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          for (int i = 0; i < ansList.length; i++) {
-                            for (int j = 0; j < ansList[i].length; j++) {
-                              if (ansList[i][j]['ans'] == "") {
-                                ansList[i][j]['ans'] = correctList[i][j];
-                                for (int k = 0; k < letterShuffle.length; k++) {
-                                  if (letterShuffle[k] == ansList[i][j]['ans'] && !(filledAns.contains(k))) {
-                                    ansList[i][j]['index'] = k;
-                                    filledAns.add(k);
-                                    break;
+                          if (dataProvider.coin > 50) {
+                            dataProvider.coin = dataProvider.coin - 50;
+                            storage.write("coin", dataProvider.coin);
+                            for (int i = 0; i < ansList.length; i++) {
+                              for (int j = 0; j < ansList[i].length; j++) {
+                                if (ansList[i][j]['ans'] == "") {
+                                  ansList[i][j]['ans'] = correctList[i][j];
+                                  for (int k = 0; k < letterShuffle.length; k++) {
+                                    if (letterShuffle[k] == ansList[i][j]['ans'] && !(filledAns.contains(k))) {
+                                      ansList[i][j]['index'] = k;
+                                      filledAns.add(k);
+                                      break;
+                                    }
                                   }
+                                  if ((areAllWordsComplete() || (boolList[i][j] && logoIsComplete)) && ansList[i][j]['ans'] == correctList[i][j]) {
+                                    if (!completeLogo.contains(widget.oneData['name'])) {
+                                      completeLogo.add(widget.oneData['name']);
+
+                                      dataProvider.coin = dataProvider.coin + 10;
+                                      storage.write("coin", dataProvider.coin);
+                                      if (completeLogo.length == widget.length) {
+                                        dataProvider.star = dataProvider.star + 2;
+                                        storage.write("star", dataProvider.star);
+                                      }
+                                    }
+                                  }
+                                  storage.write("LEVEL ${widget.index}", completeLogo);
+                                  setState(() {});
+                                  return;
                                 }
-                                setState(() {});
-                                return;
                               }
                             }
                           }
                           setState(() {});
                           storage.write(widget.oneData['name'], ansList);
+                          storage.write("filledAns-${widget.oneData['name']}", filledAns);
                         },
-                        child: Container(
-                          height: 40.sp,
-                          width: 40.w,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1.w, color: Colors.white),
-                            borderRadius: BorderRadius.circular(5.r),
-                            color: HexColor('4169E1'),
-                          ),
-                          child: Icon(
-                            Icons.emoji_objects_outlined,
-                            color: Colors.white,
-                            size: 30.sp,
-                          ),
+                        child: Stack(
+                          alignment: Alignment.topRight,
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              height: 40.sp,
+                              width: 40.w,
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 1.w, color: Colors.white),
+                                borderRadius: BorderRadius.circular(5.r),
+                                // color: dataProvider.levelContainer2,
+                                color: dataProvider.coin > 50 ? dataProvider.levelContainer2 : Colors.grey.shade500,
+                              ),
+                              child: Icon(
+                                Icons.emoji_objects_outlined,
+                                color: Colors.white,
+                                size: 30.sp,
+                              ),
+                            ),
+                            Positioned(
+                              top: 5.h,
+                              right: -20.w,
+                              child: Container(
+                                height: 15.sp,
+                                width: 30.sp,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(5.r),
+                                    bottomRight: Radius.circular(5.r),
+                                  ),
+                                  color: Colors.green,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(2.sp),
+                                      child: Image(
+                                        image: AssetImage(
+                                          'assets/images/coin.png',
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      "50",
+                                      style: GoogleFonts.lexend(
+                                        fontSize: 10.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -529,20 +642,35 @@ class _one_logo_screenState extends State<one_logo_screen> {
                       letterShuffle.length,
                       (index) {
                         return GestureDetector(
-                          onTap: () {
-                            for (int i = 0; i < ansList.length; i++) {
-                              for (int j = 0; j < ansList[i].length; j++) {
-                                if (ansList[i][j]['ans'] == "") {
-                                  ansList[i][j]['ans'] = letterShuffle[index];
-                                  ansList[i][j]['index'] = index;
-                                  filledAns.add(index);
-                                  setState(() {});
-                                  storage.write(widget.oneData['name'], ansList);
-                                  return;
+                          onTap: lifeLine > 0
+                              ? () {
+                                  for (int i = 0; i < ansList.length; i++) {
+                                    for (int j = 0; j < ansList[i].length; j++) {
+                                      if (ansList[i][j]['ans'] == "") {
+                                        ansList[i][j]['ans'] = letterShuffle[index];
+                                        ansList[i][j]['index'] = index;
+                                        filledAns.add(index);
+                                        if ((areAllWordsComplete() || (boolList[i][j] && logoIsComplete)) && ansList[i][j]['ans'] == correctList[i][j]) {
+                                          if (!completeLogo.contains(widget.oneData['name'])) {
+                                            completeLogo.add(widget.oneData['name']);
+                                            dataProvider.coin = dataProvider.coin + 10;
+                                            storage.write("coin", dataProvider.coin);
+                                          }
+                                        }
+                                        setState(() {});
+                                        storage.write(widget.oneData['name'], ansList);
+                                        storage.write("filledAns-${widget.oneData['name']}", filledAns);
+                                        storage.write("LEVEL ${widget.index}", completeLogo);
+                                        if (lifeLine != 0) {
+                                          areAllWordsComplete() ? lifeLine-- : null;
+                                        }
+                                        storage.write("lifeLine-${widget.oneData['name']}", lifeLine);
+                                        return;
+                                      }
+                                    }
+                                  }
                                 }
-                              }
-                            }
-                          },
+                              : () {},
                           child: filledAns.contains(index)
                               ? SizedBox(
                                   height: 40.sp,
@@ -552,7 +680,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                   width: 40.w,
                                   height: 40.sp,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: lifeLine > 0 ? Colors.white : Colors.grey.shade500,
                                     border: Border.all(width: 1.w, color: Colors.grey.shade300),
                                     borderRadius: BorderRadius.circular(4.r),
                                   ),
@@ -584,49 +712,28 @@ class _one_logo_screenState extends State<one_logo_screen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Stack(
-                      alignment: Alignment.bottomCenter,
-                      clipBehavior: Clip.none,
-                      children: [
-                        Container(
-                          height: 42.sp,
-                          width: 42.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                            border: Border.all(
-                              width: 1.w,
-                              color: Colors.white,
-                            ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          dataProvider.shareImage();
+                        });
+                      },
+                      child: Container(
+                        height: 42.sp,
+                        width: 42.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          border: Border.all(
+                            width: 2.w,
+                            color: dataProvider.levelContainer2,
                           ),
-                          child: Image.asset("assets/images/spinning_wheel.png"),
                         ),
-                        Positioned(
-                          bottom: -5.h,
-                          child: Container(
-                            height: 15.sp,
-                            width: 42.w,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3.r),
-                              color: Colors.green,
-                              border: Border.all(
-                                width: 0.5.w,
-                                color: Colors.white,
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "SPIN",
-                                style: GoogleFonts.lexend(
-                                  fontSize: 10.sp,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
+                        child: Padding(
+                          padding: EdgeInsets.all(5.sp),
+                          child: Image.asset("assets/images/share.png"),
+                        ),
+                      ),
                     ),
                     Container(
                       height: 42.sp,
@@ -635,12 +742,12 @@ class _one_logo_screenState extends State<one_logo_screen> {
                         shape: BoxShape.circle,
                         color: Colors.white,
                         border: Border.all(
-                          width: 3.w,
-                          color: Colors.blueAccent.shade400,
+                          width: 2.w,
+                          color: dataProvider.levelContainer2,
                         ),
                       ),
                       child: Padding(
-                        padding: EdgeInsets.all(4.sp),
+                        padding: EdgeInsets.all(5.sp),
                         child: Transform.rotate(
                           angle: -0.3,
                           child: Image.asset("assets/images/video.png"),

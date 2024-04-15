@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
             onGenerateRoute: r.Router.onRouteGenrator,
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              scaffoldBackgroundColor: HexColor('023E8A'),
+              scaffoldBackgroundColor: Api().backGround,
             ),
             home: splash_screen(),
           );
