@@ -139,7 +139,12 @@ class _one_logo_screenState extends State<one_logo_screen> {
     return Scaffold(
       backgroundColor: dataProvider.backGround,
       body: Padding(
-        padding: EdgeInsets.only(top: 50.h),
+        padding: EdgeInsets.only(
+            top: isSmall
+                ? 30.h
+                : isIpad
+                    ? 30.h
+                    : 50.h),
         child: Stack(
           children: [
             Column(
@@ -266,7 +271,11 @@ class _one_logo_screenState extends State<one_logo_screen> {
                   child: Text(
                     "LEVEL ${widget.index}",
                     style: GoogleFonts.lexend(
-                      fontSize: 25.sp,
+                      fontSize: isSmall
+                          ? 22.sp
+                          : isIpad
+                              ? 20.sp
+                              : 25.sp,
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                     ),
@@ -281,8 +290,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
                     children: [
                       Spacer(),
                       Container(
-                        height: 175.sp,
-                        width: 175.w,
+                        height: isIpad ? 120.sp : 175.sp,
+                        width: isIpad ? 120.w : 175.w,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15.r),
                         ),
@@ -314,7 +323,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20.h),
+                SizedBox(height: isIpad ? 10.h : 20.h),
                 Wrap(
                   runSpacing: 5,
                   spacing: 5,
@@ -322,7 +331,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                     correctList.length,
                     (wordIndex) {
                       return Container(
-                        height: 30.w,
+                        height: isIpad ? 26.sp : 30.sp,
                         margin: EdgeInsets.symmetric(horizontal: 5.sp),
                         child: Center(
                           child: ListView.builder(
@@ -373,7 +382,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                         ansList[wordIndex][letterIndex]['ans'],
                                         style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 22.sp,
+                                          fontSize: isIpad ? 18.sp : 22.sp,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -494,8 +503,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
                           storage.write("filledAns-${widget.oneData['name']}", filledAns);
                         },
                         child: Container(
-                          height: 40.sp,
-                          width: 40.w,
+                          height: isIpad ? 30.sp : 40.sp,
+                          width: isIpad ? 30.w : 40.w,
                           decoration: BoxDecoration(
                             border: Border.all(width: 1.w, color: Colors.white),
                             borderRadius: BorderRadius.circular(5.r),
@@ -504,7 +513,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                           child: Icon(
                             Icons.close,
                             color: Colors.white,
-                            size: 30.sp,
+                            size: isIpad ? 25.sp : 30.sp,
                           ),
                         ),
                       ),
@@ -528,8 +537,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
                           storage.write("filledAns-${widget.oneData['name']}", filledAns);
                         },
                         child: Container(
-                          height: 40.sp,
-                          width: 40.w,
+                          height: isIpad ? 30.sp : 40.sp,
+                          width: isIpad ? 30.w : 40.w,
                           decoration: BoxDecoration(
                             border: Border.all(width: 1.w, color: Colors.white),
                             borderRadius: BorderRadius.circular(5.r),
@@ -538,7 +547,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                           child: Icon(
                             Icons.replay_rounded,
                             color: Colors.white,
-                            size: 30.sp,
+                            size: isIpad ? 25.sp : 30.sp,
                           ),
                         ),
                       ),
@@ -592,8 +601,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
                           clipBehavior: Clip.none,
                           children: [
                             Container(
-                              height: 40.sp,
-                              width: 40.w,
+                              height: isIpad ? 30.sp : 40.sp,
+                              width: isIpad ? 30.w : 40.w,
                               decoration: BoxDecoration(
                                 border: Border.all(width: 1.w, color: Colors.white),
                                 borderRadius: BorderRadius.circular(5.r),
@@ -603,14 +612,14 @@ class _one_logo_screenState extends State<one_logo_screen> {
                               child: Icon(
                                 Icons.emoji_objects_outlined,
                                 color: Colors.white,
-                                size: 30.sp,
+                                size: isIpad ? 25.sp : 30.sp,
                               ),
                             ),
                             Positioned(
                               top: 5.h,
-                              right: -20.w,
+                              right: isIpad ? -25.w : -20.w,
                               child: Container(
-                                height: 15.sp,
+                                height: isIpad ? 12.sp : 15.sp,
                                 width: 30.sp,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -632,7 +641,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                     Text(
                                       "50",
                                       style: GoogleFonts.lexend(
-                                        fontSize: 10.sp,
+                                        fontSize: isIpad ? 8.sp : 10.sp,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w900,
                                       ),
@@ -691,12 +700,12 @@ class _one_logo_screenState extends State<one_logo_screen> {
                               : () {},
                           child: filledAns.contains(index)
                               ? SizedBox(
-                                  height: 40.sp,
-                                  width: 40.w,
+                                  height: isIpad ? 30.sp : 40.sp,
+                                  width: isIpad ? 30.w : 40.w,
                                 )
                               : Container(
-                                  width: 40.w,
-                                  height: 40.sp,
+                                  width: isIpad ? 30.sp : 40.w,
+                                  height: isIpad ? 30.w : 40.sp,
                                   decoration: BoxDecoration(
                                     color: lifeLine > 0 ? Colors.white : Colors.grey.shade500,
                                     border: Border.all(width: 1.w, color: Colors.grey.shade300),
@@ -707,7 +716,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                       letterShuffle[index],
                                       style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 22.sp,
+                                        fontSize: isIpad ? 18.sp : 22.sp,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -722,7 +731,11 @@ class _one_logo_screenState extends State<one_logo_screen> {
               ],
             ),
             Positioned(
-              top: 1.sh / 4,
+              top: isSmall
+                  ? 1.sh / 3
+                  : isIpad
+                      ? 1.sh / 3
+                      : 1.sh / 4,
               left: 18.w,
               right: 18.w,
               child: Container(
@@ -737,8 +750,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
                         });
                       },
                       child: Container(
-                        height: 42.sp,
-                        width: 42.w,
+                        height: isIpad ? 35.sp : 42.sp,
+                        width: isIpad ? 35.sp : 42.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
@@ -767,8 +780,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
                             }
                           : () {},
                       child: Container(
-                        height: 42.sp,
-                        width: 42.w,
+                        height: isIpad ? 35.sp : 42.sp,
+                        width: isIpad ? 35.sp : 42.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true ? Colors.white : Colors.grey.shade400,

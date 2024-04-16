@@ -54,7 +54,13 @@ class _spin_screenState extends State<spin_screen> {
             : Stack(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 50.h),
+                    padding: EdgeInsets.only(
+                      top: isSmall
+                          ? 30.h
+                          : isIpad
+                              ? 30.h
+                              : 50.h,
+                    ),
                     child: Column(
                       children: [
                         Padding(
@@ -196,12 +202,22 @@ class _spin_screenState extends State<spin_screen> {
                                                   color: dataProvider.levelContainer1,
                                                 ),
                                                 child: Padding(
-                                                  padding: EdgeInsets.symmetric(horizontal: 20.sp, vertical: 10.sp),
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 20.sp,
+                                                      vertical: isSmall
+                                                          ? 5.sp
+                                                          : isIpad
+                                                              ? 3.sp
+                                                              : 10.sp),
                                                   child: Center(
                                                     child: Text(
                                                       '${dataProvider.spinList['data'][index]['spinDate']}',
                                                       style: GoogleFonts.aboreto(
-                                                        fontSize: 22.sp,
+                                                        fontSize: isSmall
+                                                            ? 20.sp
+                                                            : isIpad
+                                                                ? 18.sp
+                                                                : 22.sp,
                                                         color: Colors.white,
                                                         fontWeight: FontWeight.w900,
                                                         fontStyle: FontStyle.normal,
@@ -261,7 +277,11 @@ class _spin_screenState extends State<spin_screen> {
                                                       Text(
                                                         "${dataProvider.spinList['data'][index]['spinDate']}",
                                                         style: GoogleFonts.lexend(
-                                                          fontSize: 22.sp,
+                                                          fontSize: isSmall
+                                                              ? 20.sp
+                                                              : isIpad
+                                                                  ? 20.sp
+                                                                  : 22.sp,
                                                           color: Colors.white,
                                                           fontWeight: FontWeight.w700,
                                                         ),
@@ -269,7 +289,11 @@ class _spin_screenState extends State<spin_screen> {
                                                       Text(
                                                         "${dataProvider.spinList['data'][index]['subject']}",
                                                         style: GoogleFonts.lexend(
-                                                          fontSize: 20.sp,
+                                                          fontSize: isSmall
+                                                              ? 18.sp
+                                                              : isIpad
+                                                                  ? 18.sp
+                                                                  : 20.sp,
                                                           color: Colors.white,
                                                           fontWeight: FontWeight.w500,
                                                         ),
@@ -286,6 +310,7 @@ class _spin_screenState extends State<spin_screen> {
                                                     child: Icon(
                                                       Icons.arrow_forward,
                                                       color: Colors.white,
+                                                      size: isIpad ? 20.sp : 25.sp,
                                                     ),
                                                   ),
                                                 ],

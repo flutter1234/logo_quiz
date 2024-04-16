@@ -46,7 +46,13 @@ class _home_screenState extends State<home_screen> {
                   ),
                 )
               : Padding(
-                  padding: EdgeInsets.only(top: 50.h),
+                  padding: EdgeInsets.only(
+                    top: isSmall
+                        ? 30.h
+                        : isIpad
+                            ? 30.h
+                            : 50.h,
+                  ),
                   child: Column(
                     children: [
                       Padding(
@@ -172,7 +178,7 @@ class _home_screenState extends State<home_screen> {
                           child: Text(
                             "LOGO GAME",
                             style: GoogleFonts.lexend(
-                              fontSize: 30.sp,
+                              fontSize: isIpad ? 25.sp : 30.sp,
                               color: Colors.white,
                               fontWeight: FontWeight.w900,
                             ),
@@ -186,7 +192,7 @@ class _home_screenState extends State<home_screen> {
                           child: Text(
                             "Quiz your brands knowledge",
                             style: GoogleFonts.lexend(
-                              fontSize: 20.sp,
+                              fontSize: isIpad ? 18.sp : 20.sp,
                               color: Colors.white,
                               fontWeight: FontWeight.w800,
                             ),
@@ -208,10 +214,10 @@ class _home_screenState extends State<home_screen> {
                           );
                         },
                         child: Container(
-                          height: 60.sp,
-                          width: 200.w,
+                          height: isIpad ? 50.sp : 60.sp,
+                          width: isIpad ? 180.w : 200.w,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.r),
+                            borderRadius: BorderRadius.circular(isIpad ? 40.r : 25.r),
                             border: Border.all(width: 3.w, color: Colors.white),
                             image: DecorationImage(
                               fit: BoxFit.fill,
@@ -224,7 +230,7 @@ class _home_screenState extends State<home_screen> {
                               child: Text(
                                 "Play",
                                 style: GoogleFonts.lexend(
-                                  fontSize: 30.sp,
+                                  fontSize: isIpad ? 25.sp : 30.sp,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w900,
                                 ),
@@ -246,8 +252,8 @@ class _home_screenState extends State<home_screen> {
                               setState(() {});
                             },
                             child: Container(
-                              height: 50.sp,
-                              width: 50.w,
+                              height: isIpad ? 40.sp : 50.sp,
+                              width: isIpad ? 40.w : 50.w,
                               decoration: BoxDecoration(
                                 border: Border.all(width: 1.w, color: Colors.white),
                                 shape: BoxShape.circle,
@@ -272,8 +278,8 @@ class _home_screenState extends State<home_screen> {
                               );
                             },
                             child: Container(
-                              height: 50.sp,
-                              width: 50.w,
+                              height: isIpad ? 40.sp : 50.sp,
+                              width: isIpad ? 40.w : 50.w,
                               decoration: BoxDecoration(
                                 border: Border.all(width: 1.w, color: Colors.white),
                                 shape: BoxShape.circle,

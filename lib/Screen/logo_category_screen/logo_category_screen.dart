@@ -48,7 +48,13 @@ class _logo_category_screenState extends State<logo_category_screen> {
       child: Scaffold(
         backgroundColor: dataProvider.backGround,
         body: Padding(
-          padding: EdgeInsets.only(top: 50.h),
+          padding: EdgeInsets.only(
+            top: isSmall
+                ? 30.h
+                : isIpad
+                    ? 30.h
+                    : 50.h,
+          ),
           child: Column(
             children: [
               Padding(
@@ -174,7 +180,11 @@ class _logo_category_screenState extends State<logo_category_screen> {
                 child: Text(
                   "LEVEL ${data['Index'] + 1}",
                   style: GoogleFonts.lexend(
-                    fontSize: 25.sp,
+                    fontSize: isSmall
+                        ? 22.sp
+                        : isIpad
+                            ? 20.sp
+                            : 25.sp,
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                   ),
@@ -226,7 +236,7 @@ class _logo_category_screenState extends State<logo_category_screen> {
                               borderRadius: BorderRadius.circular(10.r),
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.r),
+                              borderRadius: BorderRadius.circular(isIpad ? 7.r : 8.r),
                               child: CachedNetworkImage(
                                 imageUrl: data['logoData'][index]['thumbnail'],
                                 fit: BoxFit.fill,

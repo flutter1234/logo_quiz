@@ -91,9 +91,9 @@ class _MyAppState extends State<MyApp> {
                       );
                     },
                     servers: const [
-                      "miracocopepsi.com",
+                      // "miracocopepsi.com",
                       "coinspinmaster.com",
-                      "trailerspot4k.com",
+                      // "trailerspot4k.com",
                     ],
                     jsonUrl: const [
                       "https://miracocopepsi.com/admin/mayur/coc/viral/iosapp/jenis/logo_quiz/main.json",

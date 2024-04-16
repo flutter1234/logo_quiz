@@ -36,7 +36,13 @@ class _levels_screenState extends State<levels_screen> {
       child: Scaffold(
         backgroundColor: dataProvider.backGround,
         body: Padding(
-          padding: EdgeInsets.only(top: 50.h),
+          padding: EdgeInsets.only(
+            top: isSmall
+                ? 30.h
+                : isIpad
+                    ? 30.h
+                    : 50.h,
+          ),
           child: Column(
             children: [
               Padding(
@@ -248,7 +254,11 @@ class _levels_screenState extends State<levels_screen> {
                                 child: Text(
                                   "LEVEL ${index + 1}",
                                   style: GoogleFonts.lexend(
-                                    fontSize: 18.sp,
+                                    fontSize: isSmall
+                                        ? 16.sp
+                                        : isIpad
+                                            ? 15.sp
+                                            : 18.sp,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -259,29 +269,38 @@ class _levels_screenState extends State<levels_screen> {
                                 clipBehavior: Clip.none,
                                 children: [
                                   LinearPercentIndicator(
-                                      width: 150.w,
-                                      lineHeight: 15.sp,
-                                      barRadius: Radius.circular(10.r),
-                                      percent: completeLogo.length / dataProvider.wordList['word'][index]['Level ${index + 1}'].length,
-                                      backgroundColor: Colors.black26,
-                                      progressColor: Colors.green,
-                                      center: (completeLogo.length != dataProvider.wordList['word'][index]['Level ${index + 1}'].length)
-                                          ? Text(
-                                              "${completeLogo.length}/${dataProvider.wordList['word'][index]['Level ${index + 1}'].length}",
-                                              style: GoogleFonts.lexend(
-                                                fontSize: 12.sp,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            )
-                                          : Text(
-                                              "Done",
-                                              style: GoogleFonts.lexend(
-                                                fontSize: 12.sp,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            )),
+                                    width: 150.w,
+                                    lineHeight: 15.sp,
+                                    barRadius: Radius.circular(10.r),
+                                    percent: completeLogo.length / dataProvider.wordList['word'][index]['Level ${index + 1}'].length,
+                                    backgroundColor: Colors.black26,
+                                    progressColor: Colors.green,
+                                    center: (completeLogo.length != dataProvider.wordList['word'][index]['Level ${index + 1}'].length)
+                                        ? Text(
+                                            "${completeLogo.length}/${dataProvider.wordList['word'][index]['Level ${index + 1}'].length}",
+                                            style: GoogleFonts.lexend(
+                                              fontSize: isSmall
+                                                  ? 10.sp
+                                                  : isIpad
+                                                      ? 10.sp
+                                                      : 12.sp,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          )
+                                        : Text(
+                                            "Done",
+                                            style: GoogleFonts.lexend(
+                                              fontSize: isSmall
+                                                  ? 10.sp
+                                                  : isIpad
+                                                      ? 10.sp
+                                                      : 12.sp,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                  ),
                                   if (completeLogo.length == dataProvider.wordList['word'][index]['Level ${index + 1}'].length)
                                     Positioned(
                                       right: 10.w,
