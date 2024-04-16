@@ -176,96 +176,131 @@ class _spin_screenState extends State<spin_screen> {
                           padding: EdgeInsets.only(top: 20.h, left: 10.w, right: 10.w),
                           itemCount: dataProvider.spinList['data'].length,
                           itemBuilder: (context, index) {
-                            return Padding(
-                              padding: EdgeInsets.all(5.sp),
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    spinIndex = index;
-                                    if (!collectedList.contains(dataProvider.spinList['data'][index]['id'])) {
-                                      collectDialog = true;
-                                    }
-                                  });
-                                },
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      height: 60.sp,
-                                      width: 1.sw,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(width: 1.w, color: Colors.white),
-                                        borderRadius: BorderRadius.circular(6.r),
-                                        color: dataProvider.levelContainer2,
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 10.sp,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              height: 45.sp,
-                                              width: 45.sp,
-                                              child: Image(
-                                                image: AssetImage('assets/images/coin.png'),
+                            return Column(
+                              children: [
+                                index == 0 || dataProvider.spinList['data'][index]['spinDate'] != dataProvider.spinList['data'][index - 1]['spinDate']
+                                    ? Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(5.sp),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(width: 1.w, color: Colors.white),
+                                                borderRadius: BorderRadius.circular(5.r),
+                                                color: dataProvider.levelContainer1,
                                               ),
-                                            ),
-                                            Column(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Text(
-                                                  "${dataProvider.spinList['data'][index]['spinDate']}",
-                                                  style: GoogleFonts.lexend(
-                                                    fontSize: 22.sp,
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.w700,
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 20.sp, vertical: 10.sp),
+                                                child: Center(
+                                                  child: Text(
+                                                    '${dataProvider.spinList['data'][index]['spinDate']}',
+                                                    style: GoogleFonts.aboreto(
+                                                      fontSize: 22.sp,
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.w900,
+                                                      fontStyle: FontStyle.normal,
+                                                    ),
                                                   ),
                                                 ),
-                                                Text(
-                                                  "${dataProvider.spinList['data'][index]['subject']}",
-                                                  style: GoogleFonts.lexend(
-                                                    fontSize: 20.sp,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox.shrink(),
+                                Padding(
+                                  padding: EdgeInsets.all(5.sp),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        spinIndex = index;
+                                        if (!collectedList.contains(dataProvider.spinList['data'][index]['id'])) {
+                                          collectDialog = true;
+                                        }
+                                      });
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          height: 60.sp,
+                                          width: 1.sw,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(width: 1.w, color: Colors.white),
+                                            borderRadius: BorderRadius.circular(6.r),
+                                            color: dataProvider.levelContainer2,
+                                          ),
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 10.sp,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Container(
+                                                  height: 45.sp,
+                                                  width: 45.sp,
+                                                  child: Image(
+                                                    image: AssetImage('assets/images/coin.png'),
+                                                  ),
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    Text(
+                                                      "${dataProvider.spinList['data'][index]['spinDate']}",
+                                                      style: GoogleFonts.lexend(
+                                                        fontSize: 22.sp,
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.w700,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "${dataProvider.spinList['data'][index]['subject']}",
+                                                      style: GoogleFonts.lexend(
+                                                        fontSize: 20.sp,
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Container(
+                                                  height: 30.sp,
+                                                  width: 30.sp,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.black45,
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.arrow_forward,
                                                     color: Colors.white,
-                                                    fontWeight: FontWeight.w500,
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            Container(
-                                              height: 30.sp,
-                                              width: 30.sp,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.black45,
-                                              ),
-                                              child: Icon(
-                                                Icons.arrow_forward,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    collectedList.contains(dataProvider.spinList['data'][index]['id'])
-                                        ? Container(
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(5.r),
-                                              child: BackdropFilter(
-                                                filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                                                child: Container(
-                                                  height: 60.sp,
-                                                  width: 1.sw,
-                                                  color: Colors.black.withOpacity(0.3),
+                                        collectedList.contains(dataProvider.spinList['data'][index]['id'])
+                                            ? Container(
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(5.r),
+                                                  child: BackdropFilter(
+                                                    filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                                                    child: Container(
+                                                      height: 60.sp,
+                                                      width: 1.sw,
+                                                      color: Colors.black.withOpacity(0.3),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                          )
-                                        : SizedBox(),
-                                  ],
+                                              )
+                                            : SizedBox(),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             );
                           },
                         ),

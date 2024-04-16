@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -48,6 +47,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
     filledAns = storage.read("filledAns-${widget.oneData['name']}") ?? [];
     lifeLine = storage.read("lifeLine-${widget.oneData['name']}") ?? 5;
     completeLogo = storage.read("LEVEL ${widget.index}") ?? [];
+    var shuffle2 = storage.read("shuffle-${widget.oneData['name']}") ?? [];
+
     dataProvider.coin = storage.read("coin") ?? 0;
     dataProvider.star = storage.read("star") ?? 0;
     for (var letters in widget.oneData['name'].split(' ')) {
@@ -72,11 +73,17 @@ class _one_logo_screenState extends State<one_logo_screen> {
     // print("ansList ==>>${ansList}");
     // print("boolList =====>>${boolList}");
     // print("correctList ==>>>${correctList}");
-    rn = random.nextInt(23);
-    letterShuffle.add(alphabet[rn]);
-    letterShuffle.add(alphabet[rn + 1]);
-    letterShuffle.add(alphabet[rn + 2]);
-    letterShuffle.shuffle();
+    if (shuffle2.isEmpty) {
+      rn = random.nextInt(23);
+      letterShuffle.add(alphabet[rn]);
+      letterShuffle.add(alphabet[rn + 1]);
+      letterShuffle.add(alphabet[rn + 2]);
+      letterShuffle.shuffle();
+
+      storage.write("shuffle-${widget.oneData['name']}", letterShuffle);
+    } else {
+      letterShuffle = shuffle2;
+    }
 
     initializeLifelines();
 
@@ -200,7 +207,6 @@ class _one_logo_screenState extends State<one_logo_screen> {
                             width: 100.w,
                             decoration: BoxDecoration(
                               border: Border.all(width: 1.w, color: Colors.white),
-                              // border: Border.all(width: 2.w, color: HexColor('0096C7')),
                               color: Colors.black54,
                               borderRadius: BorderRadius.circular(5.r),
                             ),
@@ -475,6 +481,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                   ansList[i][j]['ans'] = "";
                                 }
                               }
+                              logoIsComplete = false;
                               setState(() {});
                             }
                           }
@@ -555,7 +562,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                       dataProvider.coin = dataProvider.coin + 10;
                                       storage.write("coin", dataProvider.coin);
                                       if (completeLogo.length == widget.length) {
-                                        dataProvider.star = dataProvider.star + 2;
+                                        dataProvider.star = dataProvider.star + 5;
                                         storage.write("star", dataProvider.star);
                                       }
                                     }
@@ -650,9 +657,10 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                         ansList[i][j]['ans'] = letterShuffle[index];
                                         ansList[i][j]['index'] = index;
                                         filledAns.add(index);
-                                        if ((areAllWordsComplete() || (boolList[i][j] && logoIsComplete)) && ansList[i][j]['ans'] == correctList[i][j]) {
+                                        if ((areAllWordsComplete() || (boolList[i][j] && logoIsComplete)) && (ansList[i][j]['ans'] == correctList[i][j])) {
                                           if (!completeLogo.contains(widget.oneData['name'])) {
                                             completeLogo.add(widget.oneData['name']);
+                                            print("completeLogo ======>>>${completeLogo}");
                                             dataProvider.coin = dataProvider.coin + 10;
                                             storage.write("coin", dataProvider.coin);
                                           }

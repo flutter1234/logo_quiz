@@ -24,6 +24,7 @@ class _levels_screenState extends State<levels_screen> {
     Api dataProvider = Provider.of<Api>(context, listen: false);
     dataProvider.mainLevel = List.filled(dataProvider.wordList['word'].length, false);
     dataProvider.coin = storage.read("coin") ?? 0;
+    dataProvider.star = storage.read("star") ?? 0;
   }
 
   @override

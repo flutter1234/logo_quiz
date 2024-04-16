@@ -28,6 +28,7 @@ class _logo_category_screenState extends State<logo_category_screen> {
       dataProvider.subLevel = List.filled(data['logoData'].length, false);
       completeLogo = storage.read("LEVEL ${data['Index'] + 1}") ?? [];
       dataProvider.coin = storage.read("coin") ?? 0;
+      dataProvider.star = storage.read("star") ?? 0;
       print(completeLogo);
       setState(() {});
       // print("subLevel =======>>>>>>>>${dataProvider.subLevel.length}");
@@ -43,7 +44,7 @@ class _logo_category_screenState extends State<logo_category_screen> {
     return Scaffold(
       backgroundColor: dataProvider.backGround,
       body: Padding(
-          padding: EdgeInsets.only(top: 50.h),
+        padding: EdgeInsets.only(top: 50.h),
         child: Column(
           children: [
             Padding(
@@ -197,7 +198,7 @@ class _logo_category_screenState extends State<logo_category_screen> {
                         arguments: {
                           "oneLogo": data['logoData'][index],
                           "Index": data['Index'] + 1,
-                          "Length" : data['logoData'].length,
+                          "Length": data['logoData'].length,
                         },
                       ).then((value) {
                         setState(() {
