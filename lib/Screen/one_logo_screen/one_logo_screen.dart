@@ -3,6 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logo_quiz/AdPlugin/Ads/FullScreen/Ads.dart';
+import 'package:logo_quiz/AdPlugin/MainJson/MainJson.dart';
 import 'package:logo_quiz/Provider/api_provider.dart';
 import 'package:logo_quiz/main.dart';
 import 'package:provider/provider.dart';
@@ -116,6 +118,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
       for (int j = 0; j < ansList[i].length; j++) {
         if (ansList[i][j]['ans'] == correctList[i][j]) {
           boolList[i][j] = true;
+          // print("boolList ===>>${boolList}");
         }
         if (ansList[i][j]['ans'] == "") {
           logoIsComplete == true ? null : logoIsComplete = false;
@@ -481,7 +484,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                   ansList[i][j]['ans'] = "";
                                 }
                               }
-                              logoIsComplete = false;
+                              // logoIsComplete = false;
+                              // storage.write("BOOL-${widget.oneData['name']}", logoIsComplete);
                               setState(() {});
                             }
                           }
@@ -520,7 +524,6 @@ class _one_logo_screenState extends State<one_logo_screen> {
                               }
                             }
                           }
-
                           storage.write(widget.oneData['name'], ansList);
                           storage.write("filledAns-${widget.oneData['name']}", filledAns);
                         },
@@ -542,37 +545,43 @@ class _one_logo_screenState extends State<one_logo_screen> {
                       GestureDetector(
                         onTap: () {
                           if (dataProvider.coin > 50) {
-                            dataProvider.coin = dataProvider.coin - 50;
-                            storage.write("coin", dataProvider.coin);
-                            for (int i = 0; i < ansList.length; i++) {
-                              for (int j = 0; j < ansList[i].length; j++) {
-                                if (ansList[i][j]['ans'] == "") {
-                                  ansList[i][j]['ans'] = correctList[i][j];
-                                  for (int k = 0; k < letterShuffle.length; k++) {
-                                    if (letterShuffle[k] == ansList[i][j]['ans'] && !(filledAns.contains(k))) {
-                                      ansList[i][j]['index'] = k;
-                                      filledAns.add(k);
-                                      break;
-                                    }
-                                  }
-                                  if ((areAllWordsComplete() || (boolList[i][j] && logoIsComplete)) && ansList[i][j]['ans'] == correctList[i][j]) {
-                                    if (!completeLogo.contains(widget.oneData['name'])) {
-                                      completeLogo.add(widget.oneData['name']);
-
-                                      dataProvider.coin = dataProvider.coin + 10;
-                                      storage.write("coin", dataProvider.coin);
-                                      if (completeLogo.length == widget.length) {
-                                        dataProvider.star = dataProvider.star + 5;
-                                        storage.write("star", dataProvider.star);
+                            AdsRN().showFullScreen(
+                              context: context,
+                              onComplete: () {
+                                dataProvider.coin = dataProvider.coin - 50;
+                                storage.write("coin", dataProvider.coin);
+                                for (int i = 0; i < ansList.length; i++) {
+                                  for (int j = 0; j < ansList[i].length; j++) {
+                                    if (ansList[i][j]['ans'] == "") {
+                                      ansList[i][j]['ans'] = correctList[i][j];
+                                      for (int k = 0; k < letterShuffle.length; k++) {
+                                        if (letterShuffle[k] == ansList[i][j]['ans'] && !(filledAns.contains(k))) {
+                                          ansList[i][j]['index'] = k;
+                                          filledAns.add(k);
+                                          break;
+                                        }
                                       }
+                                      if ((areAllWordsComplete() || (boolList[i][j] && logoIsComplete)) && ansList[i][j]['ans'] == correctList[i][j]) {
+                                        if (!completeLogo.contains(widget.oneData['name'])) {
+                                          completeLogo.add(widget.oneData['name']);
+
+                                          dataProvider.coin = dataProvider.coin + 10;
+                                          storage.write("coin", dataProvider.coin);
+                                          if (completeLogo.length == widget.length) {
+                                            dataProvider.star = dataProvider.star + 5;
+                                            storage.write("star", dataProvider.star);
+                                          }
+                                        }
+                                      }
+                                      storage.write("LEVEL ${widget.index}", completeLogo);
+                                      print("completeLogo ======>>>${completeLogo}");
+                                      setState(() {});
+                                      return;
                                     }
                                   }
-                                  storage.write("LEVEL ${widget.index}", completeLogo);
-                                  setState(() {});
-                                  return;
                                 }
-                              }
-                            }
+                              },
+                            );
                           }
                           setState(() {});
                           storage.write(widget.oneData['name'], ansList);
@@ -660,6 +669,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                         if ((areAllWordsComplete() || (boolList[i][j] && logoIsComplete)) && (ansList[i][j]['ans'] == correctList[i][j])) {
                                           if (!completeLogo.contains(widget.oneData['name'])) {
                                             completeLogo.add(widget.oneData['name']);
+                                            storage.write("LEVEL ${widget.index}", completeLogo);
                                             print("completeLogo ======>>>${completeLogo}");
                                             dataProvider.coin = dataProvider.coin + 10;
                                             storage.write("coin", dataProvider.coin);
@@ -668,7 +678,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                         setState(() {});
                                         storage.write(widget.oneData['name'], ansList);
                                         storage.write("filledAns-${widget.oneData['name']}", filledAns);
-                                        storage.write("LEVEL ${widget.index}", completeLogo);
+
                                         if (lifeLine != 0) {
                                           areAllWordsComplete() ? lifeLine-- : null;
                                         }
@@ -743,22 +753,36 @@ class _one_logo_screenState extends State<one_logo_screen> {
                         ),
                       ),
                     ),
-                    Container(
-                      height: 42.sp,
-                      width: 42.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        border: Border.all(
-                          width: 2.w,
-                          color: dataProvider.levelContainer2,
+                    GestureDetector(
+                      onTap: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true
+                          ? () {
+                              AdsRN().showFullScreen(
+                                context: context,
+                                onComplete: () {
+                                  dataProvider.coin = dataProvider.coin + 25;
+                                  storage.write("coin", dataProvider.coin);
+                                  setState(() {});
+                                },
+                              );
+                            }
+                          : () {},
+                      child: Container(
+                        height: 42.sp,
+                        width: 42.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true ? Colors.white : Colors.grey.shade400,
+                          border: Border.all(
+                            width: 2.w,
+                            color: dataProvider.levelContainer2,
+                          ),
                         ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(5.sp),
-                        child: Transform.rotate(
-                          angle: -0.3,
-                          child: Image.asset("assets/images/video.png"),
+                        child: Padding(
+                          padding: EdgeInsets.all(5.sp),
+                          child: Transform.rotate(
+                            angle: -0.3,
+                            child: Image.asset("assets/images/video.png"),
+                          ),
                         ),
                       ),
                     ),

@@ -12,7 +12,6 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
 class Api extends ChangeNotifier {
-  Map mainData = {};
   String wordJson = "";
   Map wordList = {};
   String spinJson = "";
@@ -27,20 +26,8 @@ class Api extends ChangeNotifier {
   int coin = 0;
   int star = 0;
 
-  Future<void> getData() async {
-    var url = Uri.parse("https://coinspinmaster.com/viral/iosapp/jenis/logo_quiz/main.json");
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      mainData = jsonDecode(response.body);
-      notifyListeners();
-    }
-    notifyListeners();
-    // print('mainData ==========>>>>>>${mainData}');
-  }
-
-  Future<void> logoQuiz() async {
-    wordJson = mainData['assets']['wordJson'];
-    var url = Uri.parse(wordJson);
+  Future<void> logoQuiz(var Url) async {
+    var url = Uri.parse(Url);
     var response = await http.get(url);
     if (response.statusCode == 200) {
       wordList = jsonDecode(response.body);
@@ -50,9 +37,8 @@ class Api extends ChangeNotifier {
     // print('wordList ==========>>>>>>${wordList}');
   }
 
-  Future<void> spinData() async {
-    spinJson = mainData['assets']['spinJson'];
-    var url = Uri.parse(spinJson);
+  Future<void> spinData(var Url) async {
+    var url = Uri.parse(Url);
     var response = await http.get(url);
     if (response.statusCode == 200) {
       spinList = jsonDecode(response.body);

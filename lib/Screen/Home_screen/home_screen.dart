@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:logo_quiz/AdPlugin/Ads/FullScreen/Ads.dart';
+import 'package:logo_quiz/AdPlugin/MainJson/MainJson.dart';
 import 'package:logo_quiz/Provider/api_provider.dart';
 import 'package:logo_quiz/Screen/level_screen/level_screen.dart';
 import 'package:logo_quiz/Screen/spin_master_screen/spin_screen.dart';
@@ -19,8 +21,13 @@ class home_screen extends StatefulWidget {
 }
 
 class _home_screenState extends State<home_screen> {
+  bool isLoading = true;
+
   @override
   void initState() {
+    context.read<Api>().logoQuiz(context.read<MainJson>().data!['assets']['wordJson']).then((value) {
+      isLoading = false;
+    });
     fetchData();
     super.initState();
   }
@@ -32,242 +39,258 @@ class _home_screenState extends State<home_screen> {
       children: [
         Scaffold(
           backgroundColor: dataProvider.backGround,
-          body: Padding(
-            padding: EdgeInsets.only(top: 50.h),
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.sp),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          body: isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                )
+              : Padding(
+                  padding: EdgeInsets.only(top: 50.h),
+                  child: Column(
                     children: [
-                      GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          height: 30.sp,
-                          width: 30.w,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1.w, color: Colors.white),
-                            color: dataProvider.levelContainer2,
-                            borderRadius: BorderRadius.circular(5.r),
-                          ),
-                          child: Icon(
-                            Icons.settings,
-                            size: 22.sp,
-                            color: Colors.white,
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.sp),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                height: 30.sp,
+                                width: 30.w,
+                                decoration: BoxDecoration(
+                                  border: Border.all(width: 1.w, color: Colors.white),
+                                  color: dataProvider.levelContainer2,
+                                  borderRadius: BorderRadius.circular(5.r),
+                                ),
+                                child: Icon(
+                                  Icons.settings,
+                                  size: 22.sp,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Container(
+                                  height: 30.sp,
+                                  width: 100.w,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(width: 1.w, color: Colors.white),
+                                    color: Colors.black54,
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "${dataProvider.star}",
+                                      style: GoogleFonts.lexend(
+                                        fontSize: 20.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: -14.w,
+                                  child: Image(
+                                    height: 30.sp,
+                                    image: AssetImage(
+                                      'assets/images/star.png',
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Container(
+                                  height: 30.sp,
+                                  width: 100.w,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(width: 1.w, color: Colors.white),
+                                    // border: Border.all(width: 2.w, color: HexColor('0096C7')),
+                                    color: Colors.black54,
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 5.sp),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Spacer(),
+                                        Text(
+                                          "${dataProvider.coin}",
+                                          style: GoogleFonts.lexend(
+                                            fontSize: 20.sp,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Container(
+                                          height: 20.sp,
+                                          width: 20.w,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5.r),
+                                            color: Colors.green,
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.add,
+                                              size: 18.sp,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: -14.w,
+                                  child: Image(
+                                    height: 30.sp,
+                                    image: AssetImage(
+                                      'assets/images/coin.png',
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 15.h),
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.w, top: 10.h),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "LOGO GAME",
+                            style: GoogleFonts.lexend(
+                              fontSize: 30.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
                         ),
                       ),
-                      Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            height: 30.sp,
-                            width: 100.w,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 1.w, color: Colors.white),
-                              color: Colors.black54,
-                              borderRadius: BorderRadius.circular(5.r),
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.w),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Quiz your brands knowledge",
+                            style: GoogleFonts.lexend(
+                              fontSize: 20.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
                             ),
-                            child: Center(
+                          ),
+                        ),
+                      ),
+                      Spacer(
+                        flex: 3,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          AdsRN().showFullScreen(
+                            context: context,
+                            onComplete: () {
+                              Navigator.pushNamed(context, levels_screen.routeName).then((value) {
+                                setState(() {});
+                              });
+                            },
+                          );
+                        },
+                        child: Container(
+                          height: 60.sp,
+                          width: 200.w,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.r),
+                            border: Border.all(width: 3.w, color: Colors.white),
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage("assets/images/play_button.png"),
+                            ),
+                          ),
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 8.h),
                               child: Text(
-                                "${dataProvider.star}",
+                                "Play",
                                 style: GoogleFonts.lexend(
-                                  fontSize: 20.sp,
+                                  fontSize: 30.sp,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
                             ),
                           ),
-                          Positioned(
-                            left: -14.w,
-                            child: Image(
-                              height: 30.sp,
-                              image: AssetImage(
-                                'assets/images/star.png',
+                        ),
+                      ),
+                      Spacer(
+                        flex: 1,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              dataProvider.themeChangeDialog = true;
+                              setState(() {});
+                            },
+                            child: Container(
+                              height: 50.sp,
+                              width: 50.w,
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 1.w, color: Colors.white),
+                                shape: BoxShape.circle,
+                                color: Colors.blueAccent.shade400,
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(6.sp),
+                                child: Image.asset("assets/images/themes.png"),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 25.w),
+                          GestureDetector(
+                            onTap: () {
+                              AdsRN().showFullScreen(
+                                context: context,
+                                onComplete: () {
+                                  Navigator.pushNamed(context, spin_screen.routeName).then((value) {
+                                    setState(() {});
+                                  });
+                                },
+                              );
+                            },
+                            child: Container(
+                              height: 50.sp,
+                              width: 50.w,
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 1.w, color: Colors.white),
+                                shape: BoxShape.circle,
+                                color: Colors.blueAccent.shade400,
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(5.sp),
+                                child: Image.asset("assets/images/dollar.png"),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            height: 30.sp,
-                            width: 100.w,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 1.w, color: Colors.white),
-                              // border: Border.all(width: 2.w, color: HexColor('0096C7')),
-                              color: Colors.black54,
-                              borderRadius: BorderRadius.circular(5.r),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5.sp),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Spacer(),
-                                  Text(
-                                    "${dataProvider.coin}",
-                                    style: GoogleFonts.lexend(
-                                      fontSize: 20.sp,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Container(
-                                    height: 20.sp,
-                                    width: 20.w,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.r),
-                                      color: Colors.green,
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 18.sp,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: -14.w,
-                            child: Image(
-                              height: 30.sp,
-                              image: AssetImage(
-                                'assets/images/coin.png',
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
+                      Spacer(),
                     ],
                   ),
                 ),
-                SizedBox(height: 15.h),
-                Padding(
-                  padding: EdgeInsets.only(left: 10.w, top: 10.h),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "LOGO GAME",
-                      style: GoogleFonts.lexend(
-                        fontSize: 30.sp,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10.w),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Quiz your brands knowledge",
-                      style: GoogleFonts.lexend(
-                        fontSize: 20.sp,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ),
-                Spacer(
-                  flex: 3,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, levels_screen.routeName).then((value) {
-                      setState(() {});
-                    });
-                  },
-                  child: Container(
-                    height: 60.sp,
-                    width: 200.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.r),
-                      border: Border.all(width: 3.w, color: Colors.white),
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage("assets/images/play_button.png"),
-                      ),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 8.h),
-                        child: Text(
-                          "Play",
-                          style: GoogleFonts.lexend(
-                            fontSize: 30.sp,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Spacer(
-                  flex: 1,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        dataProvider.themeChangeDialog = true;
-                        setState(() {});
-                      },
-                      child: Container(
-                        height: 50.sp,
-                        width: 50.w,
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1.w, color: Colors.white),
-                          shape: BoxShape.circle,
-                          color: Colors.blueAccent.shade400,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(6.sp),
-                          child: Image.asset("assets/images/themes.png"),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 25.w),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, spin_screen.routeName).then((value) {
-                          setState(() {});
-                        });
-                      },
-                      child: Container(
-                        height: 50.sp,
-                        width: 50.w,
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1.w, color: Colors.white),
-                          shape: BoxShape.circle,
-                          color: Colors.blueAccent.shade400,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(5.sp),
-                          child: Image.asset("assets/images/dollar.png"),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-              ],
-            ),
-          ),
         ),
         dataProvider.themeChangeDialog == true
             ? Scaffold(
