@@ -36,6 +36,7 @@ class Api extends ChangeNotifier {
   bool soundOn = true;
   bool statisticsDialog = false;
   int totalHint = 0;
+  int levelLength = 0;
 
   Future<void> logoQuiz(var Url) async {
     var url = Uri.parse(Url);

@@ -32,6 +32,7 @@ class _home_screenState extends State<home_screen> {
     dataProvider.soundOn = storage.read("soundOn") ?? true;
     dataProvider.musicOn = storage.read("musicOn") ?? true;
     dataProvider.totalHint = storage.read("totalHint") ?? 0;
+    dataProvider.levelLength = storage.read("levelLength") ?? 0;
     context.read<Api>().logoQuiz(context.read<MainJson>().data!['assets']['wordJson']).then((value) {
       lengthData();
       isLoading = false;
@@ -419,11 +420,9 @@ class _home_screenState extends State<home_screen> {
                                         dataProvider.backGround = HexColor('023E8A');
                                         storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
                                         dataProvider.levelContainer1 = HexColor('3271a5');
-                                        storage.write(
-                                            "levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
+                                        storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
                                         dataProvider.levelContainer2 = HexColor('1477d2');
-                                        storage.write(
-                                            "levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
+                                        storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
                                         if (dataProvider.soundOn == true) {
                                           dataProvider.initOnTap();
                                         }
@@ -445,11 +444,9 @@ class _home_screenState extends State<home_screen> {
                                         dataProvider.backGround = HexColor('79305a');
                                         storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
                                         dataProvider.levelContainer1 = HexColor('8e3563');
-                                        storage.write(
-                                            "levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
+                                        storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
                                         dataProvider.levelContainer2 = HexColor('b33b72');
-                                        storage.write(
-                                            "levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
+                                        storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
                                         if (dataProvider.soundOn == true) {
                                           dataProvider.initOnTap();
                                         }
@@ -480,11 +477,9 @@ class _home_screenState extends State<home_screen> {
                                         dataProvider.backGround = HexColor('2d3b43');
                                         storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
                                         dataProvider.levelContainer1 = HexColor('3e515b');
-                                        storage.write(
-                                            "levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
+                                        storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
                                         dataProvider.levelContainer2 = HexColor('4d6471');
-                                        storage.write(
-                                            "levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
+                                        storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
                                         if (dataProvider.soundOn == true) {
                                           dataProvider.initOnTap();
                                         }
@@ -507,11 +502,9 @@ class _home_screenState extends State<home_screen> {
                                         dataProvider.backGround = HexColor('df2c14');
                                         storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
                                         dataProvider.levelContainer1 = HexColor('ed3419');
-                                        storage.write(
-                                            "levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
+                                        storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
                                         dataProvider.levelContainer2 = HexColor('fb3b1e');
-                                        storage.write(
-                                            "levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
+                                        storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
                                         if (dataProvider.soundOn == true) {
                                           dataProvider.initOnTap();
                                         }
@@ -639,9 +632,7 @@ class _home_screenState extends State<home_screen> {
                                           borderRadius: BorderRadius.circular(6.r),
                                         ),
                                         child: Icon(
-                                          dataProvider.musicOn == true
-                                              ? Icons.music_note_sharp
-                                              : Icons.music_off_rounded,
+                                          dataProvider.musicOn == true ? Icons.music_note_sharp : Icons.music_off_rounded,
                                           color: Colors.white,
                                           size: 28.sp,
                                         ),
@@ -665,9 +656,7 @@ class _home_screenState extends State<home_screen> {
                                           borderRadius: BorderRadius.circular(6.r),
                                         ),
                                         child: Icon(
-                                          dataProvider.soundOn == true
-                                              ? Icons.volume_up_rounded
-                                              : Icons.volume_off_outlined,
+                                          dataProvider.soundOn == true ? Icons.volume_up_rounded : Icons.volume_off_outlined,
                                           color: Colors.white,
                                           size: 28.sp,
                                         ),
@@ -1134,7 +1123,7 @@ class _home_screenState extends State<home_screen> {
                                       ),
                                     ),
                                     Text(
-                                      "28",
+                                      "${dataProvider.levelLength}",
                                       style: GoogleFonts.lexend(
                                         fontSize: isIpad ? 18.sp : 18.sp,
                                         color: Colors.white,

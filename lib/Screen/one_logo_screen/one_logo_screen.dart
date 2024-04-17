@@ -590,7 +590,10 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                           storage.write("coin", dataProvider.coin);
                                           if (completeLogo.length == widget.length) {
                                             dataProvider.star = dataProvider.star + 5;
+                                            dataProvider.levelLength = dataProvider.levelLength + 1;
+                                            setState(() {});
                                             storage.write("star", dataProvider.star);
+                                            storage.write("levelLength", dataProvider.levelLength);
                                           }
                                         }
                                       }
@@ -711,7 +714,6 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                             }
                                           }
                                         }
-
                                       }
                                       if (tempAns == widget.oneData['name']) {
                                         if (!completeLogo.contains(widget.oneData['name'])) {
@@ -721,6 +723,13 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                           dataProvider.coin = dataProvider.coin + 10;
                                           storage.write("coin", dataProvider.coin);
                                         }
+                                      }
+                                      if (completeLogo.length == widget.length) {
+                                        dataProvider.star = dataProvider.star + 5;
+                                        dataProvider.levelLength = dataProvider.levelLength + 1;
+                                        setState(() {});
+                                        storage.write("star", dataProvider.star);
+                                        storage.write("levelLength", dataProvider.levelLength);
                                       }
                                     }
                                     if (i < correctList.length - 1) {
