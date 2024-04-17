@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
+import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Api extends ChangeNotifier {
   String wordJson = "";
@@ -25,6 +27,15 @@ class Api extends ChangeNotifier {
   Color levelContainer2 = HexColor('46a2da');
   int coin = 0;
   int star = 0;
+  late String url;
+  AudioPlayer audioPlayerBackground = AudioPlayer();
+  String audioBackground = 'assets/Sound/logo_quiz_music.mp3';
+  bool musicOn = true;
+  AudioPlayer audioPlayerOnTap = AudioPlayer();
+  String audioOnTap = 'assets/Sound/tap_sound.wav';
+  bool soundOn = true;
+  bool statisticsDialog = false;
+  int totalHint = 0;
 
   Future<void> logoQuiz(var Url) async {
     var url = Uri.parse(Url);
@@ -45,7 +56,6 @@ class Api extends ChangeNotifier {
       notifyListeners();
     }
     notifyListeners();
-    print('spinList ==========>>>>>>${spinList}');
   }
 
   Future<void> shareImage() async {
@@ -59,5 +69,26 @@ class Api extends ChangeNotifier {
         }
       },
     );
+  }
+
+  Future<void> launchurl() async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw Exception('Could not launch ${Uri.parse(url)}');
+    }
+  }
+
+  Future<void> initAudioPlayer() async {
+    try {
+      await audioPlayerBackground.setAsset(audioBackground);
+      audioPlayerBackground.setLoopMode(LoopMode.one);
+      audioPlayerBackground.play();
+    } catch (e) {
+      print('Error initializing audio player: $e');
+    }
+  }
+
+  Future<void> initOnTap() async {
+    await audioPlayerOnTap.setAsset(audioOnTap);
+    await audioPlayerOnTap.play();
   }
 }

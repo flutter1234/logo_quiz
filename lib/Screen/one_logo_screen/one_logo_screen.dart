@@ -41,14 +41,14 @@ class _one_logo_screenState extends State<one_logo_screen> {
   @override
   void initState() {
     Api dataProvider = Provider.of<Api>(context, listen: false);
-
     List ansList2 = [];
-
     ansList = storage.read(widget.oneData['name']) ?? [];
     logoIsComplete = storage.read("BOOL-${widget.oneData['name']}") ?? false;
     filledAns = storage.read("filledAns-${widget.oneData['name']}") ?? [];
     lifeLine = storage.read("lifeLine-${widget.oneData['name']}") ?? 5;
     completeLogo = storage.read("LEVEL ${widget.index}") ?? [];
+    dataProvider.totalHint = storage.read("totalHint") ?? 0;
+
     var shuffle2 = storage.read("shuffle-${widget.oneData['name']}") ?? [];
 
     dataProvider.coin = storage.read("coin") ?? 0;
@@ -64,7 +64,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
       for (var letters in element.split('')) {
         temp.add(letters);
         letterShuffle.add(letters);
-        anstemp.add({"ans": "", "index": 0});
+        anstemp.add({"ans": "", "index": 0, "color": null});
       }
       ansList2.add(anstemp);
       correctList.add(temp);
@@ -81,14 +81,11 @@ class _one_logo_screenState extends State<one_logo_screen> {
       letterShuffle.add(alphabet[rn + 1]);
       letterShuffle.add(alphabet[rn + 2]);
       letterShuffle.shuffle();
-
       storage.write("shuffle-${widget.oneData['name']}", letterShuffle);
     } else {
       letterShuffle = shuffle2;
     }
-
     initializeLifelines();
-
     super.initState();
   }
 
@@ -140,11 +137,12 @@ class _one_logo_screenState extends State<one_logo_screen> {
       backgroundColor: dataProvider.backGround,
       body: Padding(
         padding: EdgeInsets.only(
-            top: isSmall
-                ? 30.h
-                : isIpad
-                    ? 30.h
-                    : 50.h),
+          top: isSmall
+              ? 30.h
+              : isIpad
+                  ? 30.h
+                  : 50.h,
+        ),
         child: Stack(
           children: [
             Column(
@@ -156,6 +154,9 @@ class _one_logo_screenState extends State<one_logo_screen> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          if (dataProvider.soundOn == true) {
+                            dataProvider.initOnTap();
+                          }
                           Navigator.pop(context);
                         },
                         child: Container(
@@ -342,6 +343,9 @@ class _one_logo_screenState extends State<one_logo_screen> {
                             itemBuilder: (context, letterIndex) {
                               return GestureDetector(
                                 onTap: () {
+                                  if (dataProvider.soundOn == true) {
+                                    dataProvider.initOnTap();
+                                  }
                                   if (ansList[wordIndex][letterIndex]['ans'] != "") {
                                     if (areAllWordsComplete() || (boolList[wordIndex][letterIndex] && logoIsComplete)) {
                                       if (correctList[wordIndex][letterIndex] != ansList[wordIndex][letterIndex]['ans']) {
@@ -366,15 +370,13 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                   child: Container(
                                     width: 30.w,
                                     decoration: BoxDecoration(
-                                      color: areAllWordsComplete() || (boolList[wordIndex][letterIndex] && logoIsComplete)
-                                          ? ansList[wordIndex][letterIndex]['ans'] == correctList[wordIndex][letterIndex]
-                                              ? Colors.green
-                                              : ansList[wordIndex][letterIndex]['ans'] == ""
-                                                  ? Colors.white70
-                                                  : Colors.red
-                                          : logoIsComplete == false || ansList[wordIndex][letterIndex]['ans'] == ""
-                                              ? Colors.white70
-                                              : Colors.red,
+                                      color: areAllWordsComplete()
+                                          ? ansList[wordIndex][letterIndex]['color'] == "green"
+                                              ? Colors.green.shade700
+                                              : Colors.red
+                                          : ansList[wordIndex][letterIndex]['color'] == "green"
+                                              ? Colors.green.shade700
+                                              : Colors.white60,
                                       borderRadius: BorderRadius.circular(3.r),
                                     ),
                                     child: Center(
@@ -484,17 +486,17 @@ class _one_logo_screenState extends State<one_logo_screen> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          if (dataProvider.soundOn == true) {
+                            dataProvider.initOnTap();
+                          }
                           for (int i = 0; i < ansList.length; i++) {
                             for (int j = 0; j < ansList[i].length; j++) {
-                              if (correctList[i][j] != ansList[i][j]['ans']) {
-                                if (ansList[i][j]['ans'] != correctList[i][j]) {
-                                  filledAns.remove(ansList[i][j]['index']);
-                                  ansList[i][j]['index'] = 0;
-                                  ansList[i][j]['ans'] = "";
-                                }
+                              if (ansList[i][j]['color'] != "green") {
+                                filledAns.remove(ansList[i][j]['index']);
+                                ansList[i][j]['index'] = 0;
+                                ansList[i][j]['ans'] = "";
                               }
-                              // logoIsComplete = false;
-                              // storage.write("BOOL-${widget.oneData['name']}", logoIsComplete);
+
                               setState(() {});
                             }
                           }
@@ -519,9 +521,12 @@ class _one_logo_screenState extends State<one_logo_screen> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          if (dataProvider.soundOn == true) {
+                            dataProvider.initOnTap();
+                          }
                           for (int i = ansList.length - 1; i >= 0; i--) {
                             for (int j = ansList[i].length - 1; j >= 0; j--) {
-                              if (correctList[i][j] != ansList[i][j]['ans']) {
+                              if (ansList[i][j]['color'] != "green") {
                                 if (ansList[i][j]['ans'].isNotEmpty) {
                                   letterShuffle[ansList[i][j]['index']] = ansList[i][j]['ans'];
                                   filledAns.remove(ansList[i][j]['index']);
@@ -557,8 +562,14 @@ class _one_logo_screenState extends State<one_logo_screen> {
                             AdsRN().showFullScreen(
                               context: context,
                               onComplete: () {
+                                if (dataProvider.soundOn == true) {
+                                  dataProvider.initOnTap();
+                                }
                                 dataProvider.coin = dataProvider.coin - 50;
                                 storage.write("coin", dataProvider.coin);
+                                dataProvider.totalHint = dataProvider.totalHint + 1;
+                                storage.write("totalHint", dataProvider.totalHint);
+
                                 for (int i = 0; i < ansList.length; i++) {
                                   for (int j = 0; j < ansList[i].length; j++) {
                                     if (ansList[i][j]['ans'] == "") {
@@ -570,7 +581,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                           break;
                                         }
                                       }
-                                      if ((areAllWordsComplete() || (boolList[i][j] && logoIsComplete)) && ansList[i][j]['ans'] == correctList[i][j]) {
+                                      if ((areAllWordsComplete() || (boolList[i][j] && logoIsComplete)) &&
+                                          ansList[i][j]['ans'] == correctList[i][j]) {
                                         if (!completeLogo.contains(widget.oneData['name'])) {
                                           completeLogo.add(widget.oneData['name']);
 
@@ -669,33 +681,62 @@ class _one_logo_screenState extends State<one_logo_screen> {
                         return GestureDetector(
                           onTap: lifeLine > 0
                               ? () {
-                                  for (int i = 0; i < ansList.length; i++) {
-                                    for (int j = 0; j < ansList[i].length; j++) {
+                                  if (dataProvider.soundOn == true) {
+                                    dataProvider.initOnTap();
+                                  }
+                                  String tempAns = "";
+                                  loop:
+                                  for (int i = 0; i < correctList.length; i++) {
+                                    for (int j = 0; j < correctList[i].length; j++) {
                                       if (ansList[i][j]['ans'] == "") {
                                         ansList[i][j]['ans'] = letterShuffle[index];
                                         ansList[i][j]['index'] = index;
                                         filledAns.add(index);
-                                        if ((areAllWordsComplete() || (boolList[i][j] && logoIsComplete)) && (ansList[i][j]['ans'] == correctList[i][j])) {
-                                          if (!completeLogo.contains(widget.oneData['name'])) {
-                                            completeLogo.add(widget.oneData['name']);
-                                            storage.write("LEVEL ${widget.index}", completeLogo);
-                                            print("completeLogo ======>>>${completeLogo}");
-                                            dataProvider.coin = dataProvider.coin + 10;
-                                            storage.write("coin", dataProvider.coin);
-                                          }
-                                        }
                                         setState(() {});
                                         storage.write(widget.oneData['name'], ansList);
                                         storage.write("filledAns-${widget.oneData['name']}", filledAns);
-
-                                        if (lifeLine != 0) {
-                                          areAllWordsComplete() ? lifeLine-- : null;
-                                        }
-                                        storage.write("lifeLine-${widget.oneData['name']}", lifeLine);
-                                        return;
+                                        break loop;
                                       }
                                     }
                                   }
+                                  for (int i = 0; i < correctList.length; i++) {
+                                    for (int j = 0; j < correctList[i].length; j++) {
+                                      tempAns = tempAns + ansList[i][j]['ans'];
+                                      if (areAllWordsComplete()) {
+                                        for (int k = 0; k < correctList.length; k++) {
+                                          for (int l = 0; l < correctList[k].length; l++) {
+                                            if (ansList[k][l]['ans'] == correctList[k][l]) {
+                                              ansList[k][l]['color'] = "green";
+                                              storage.write(widget.oneData['name'], ansList);
+                                            }
+                                          }
+                                        }
+
+                                      }
+                                      if (tempAns == widget.oneData['name']) {
+                                        if (!completeLogo.contains(widget.oneData['name'])) {
+                                          completeLogo.add(widget.oneData['name']);
+                                          storage.write("LEVEL ${widget.index}", completeLogo);
+                                          print("completeLogo ======>>>${completeLogo}");
+                                          dataProvider.coin = dataProvider.coin + 10;
+                                          storage.write("coin", dataProvider.coin);
+                                        }
+                                      }
+                                    }
+                                    if (i < correctList.length - 1) {
+                                      tempAns = tempAns + " ";
+                                    }
+                                  }
+                                  print(ansList);
+                                  print(correctList);
+                                  print(tempAns);
+                                  if (tempAns != widget.oneData['name']) {
+                                    if (lifeLine != 0) {
+                                      areAllWordsComplete() ? lifeLine-- : null;
+                                    }
+                                    storage.write("lifeLine-${widget.oneData['name']}", lifeLine);
+                                  }
+                                  setState(() {});
                                 }
                               : () {},
                           child: filledAns.contains(index)
@@ -784,7 +825,9 @@ class _one_logo_screenState extends State<one_logo_screen> {
                         width: isIpad ? 35.sp : 42.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true ? Colors.white : Colors.grey.shade400,
+                          color: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true
+                              ? Colors.white
+                              : Colors.grey.shade400,
                           border: Border.all(
                             width: 2.w,
                             color: dataProvider.levelContainer2,

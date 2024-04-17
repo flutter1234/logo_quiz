@@ -5,6 +5,8 @@ PODS:
     - AppLovinSDK (= 12.4.1)
     - Flutter
   - AppLovinSDK (12.4.1)
+  - audio_session (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
   - flutter_icmp_ping (0.0.1):
     - Flutter
@@ -67,6 +69,8 @@ PODS:
     - Flutter
     - IronSourceSDK (= 7.3.0)
   - IronSourceSDK (7.3.0.0)
+  - just_audio (0.0.1):
+    - Flutter
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
     - nanopb/encode (= 2.30910.0)
@@ -142,11 +146,13 @@ PODS:
 DEPENDENCIES:
   - app_tracking_transparency (from `.symlinks/plugins/app_tracking_transparency/ios`)
   - applovin_max (from `.symlinks/plugins/applovin_max/ios`)
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - Flutter (from `Flutter`)
   - flutter_icmp_ping (from `.symlinks/plugins/flutter_icmp_ping/ios`)
   - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
   - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - ironsource_adpluginx (from `.symlinks/plugins/ironsource_adpluginx/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
   - OneSignalXCFramework (< 6.0, >= 5.0.0)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -176,6 +182,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/app_tracking_transparency/ios"
   applovin_max:
     :path: ".symlinks/plugins/applovin_max/ios"
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
   Flutter:
     :path: Flutter
   flutter_icmp_ping:
@@ -186,6 +194,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/in_app_review/ios"
   ironsource_adpluginx:
     :path: ".symlinks/plugins/ironsource_adpluginx/ios"
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/ios"
   onesignal_flutter:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
   package_info_plus:
@@ -209,6 +219,7 @@ SPEC CHECKSUMS:
   app_tracking_transparency: 5b1745ef9ade815f7455cb6a0848349589afb7c5
   applovin_max: ba085679c56f58273833df0bc50ef10196f76fa7
   AppLovinSDK: c57ad0d34625c971d2db127f8ef60570b28ff51a
+  audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_icmp_ping: 2b159955eee0c487c766ad83fec224ae35e7c935
   Google-Mobile-Ads-SDK: 58b4fda3f9758fc1ed210aa5cf7777b5eb55d47e
@@ -219,6 +230,7 @@ SPEC CHECKSUMS:
   in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   ironsource_adpluginx: 2c830c7ec1cccd2f8794d8fc987ce71c8f9a8af7
   IronSourceSDK: 70d098472ea63fa8d58e47ad79ad761ad256ce15
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   onesignal_flutter: 353c8035cdb0ac8fba18b32ad7e207c487a67633
   OneSignalXCFramework: a334eb658aa87a1ea641bbdda64465f09dcfc37a

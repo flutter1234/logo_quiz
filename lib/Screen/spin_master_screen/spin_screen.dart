@@ -70,6 +70,9 @@ class _spin_screenState extends State<spin_screen> {
                             children: [
                               GestureDetector(
                                 onTap: () {
+                                  if (dataProvider.soundOn == true) {
+                                    dataProvider.initOnTap();
+                                  }
                                   Navigator.pop(context);
                                 },
                                 child: Container(
@@ -77,7 +80,6 @@ class _spin_screenState extends State<spin_screen> {
                                   width: 30.w,
                                   decoration: BoxDecoration(
                                     border: Border.all(width: 1.w, color: Colors.white),
-                                    // color: HexColor('0096C7'),
                                     color: dataProvider.levelContainer2,
                                     borderRadius: BorderRadius.circular(5.r),
                                   ),
@@ -235,6 +237,9 @@ class _spin_screenState extends State<spin_screen> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
+                                          if (dataProvider.soundOn == true) {
+                                            dataProvider.initOnTap();
+                                          }
                                           spinIndex = index;
                                           if (!collectedList.contains(dataProvider.spinList['data'][index]['id'])) {
                                             AdsRN().showFullScreen(
@@ -411,6 +416,9 @@ class _spin_screenState extends State<spin_screen> {
                                           children: [
                                             GestureDetector(
                                               onTap: () async {
+                                                if (dataProvider.soundOn == true) {
+                                                  dataProvider.initOnTap();
+                                                }
                                                 collectDialog = false;
                                                 setState(() {});
                                               },
@@ -462,6 +470,9 @@ class _spin_screenState extends State<spin_screen> {
                                                   AdsRN().showFullScreen(
                                                     context: context,
                                                     onComplete: () {
+                                                      if (dataProvider.soundOn == true) {
+                                                        dataProvider.initOnTap();
+                                                      }
                                                       dataProvider.coin = dataProvider.coin + int.parse(dataProvider.spinList['data'][spinIndex]['codeUrl']);
                                                       storage.write("coin", dataProvider.coin);
                                                       collectedList.add(dataProvider.spinList['data'][spinIndex]['id']);

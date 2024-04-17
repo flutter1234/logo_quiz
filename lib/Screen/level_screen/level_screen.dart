@@ -52,6 +52,9 @@ class _levels_screenState extends State<levels_screen> {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        if (dataProvider.soundOn == true) {
+                          dataProvider.initOnTap();
+                        }
                         Navigator.pop(context);
                       },
                       child: Container(
@@ -180,6 +183,9 @@ class _levels_screenState extends State<levels_screen> {
                         AdsRN().showFullScreen(
                           context: context,
                           onComplete: () {
+                            if (dataProvider.soundOn == true) {
+                              dataProvider.initOnTap();
+                            }
                             Navigator.pushNamed(
                               context,
                               logo_category_screen.routeName,

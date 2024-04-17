@@ -102,9 +102,9 @@ class _MyAppState extends State<MyApp> {
                     ],
                     version: '1.0.0',
                     child: const splash_screen()),
-                theme: ThemeData(
-                  scaffoldBackgroundColor: Api().backGround,
-                ),
+                // theme: ThemeData(
+                //   scaffoldBackgroundColor: Api().backGround,
+                // ),
                 navigatorKey: NavigationService.navigatorKey,
                 onGenerateRoute: r.Router.onRouteGenrator,
                 debugShowCheckedModeBanner: false,

@@ -29,9 +29,9 @@ class _logo_category_screenState extends State<logo_category_screen> {
       data = ModalRoute.of(context)!.settings.arguments;
       dataProvider.subLevel = List.filled(data['logoData'].length, false);
       completeLogo = storage.read("LEVEL ${data['Index'] + 1}") ?? [];
+      print("completeLogo ===>>${"LEVEL ${data['Index'] + 1}"}");
       dataProvider.coin = storage.read("coin") ?? 0;
       dataProvider.star = storage.read("star") ?? 0;
-      print(completeLogo);
       setState(() {});
       // print("subLevel =======>>>>>>>>${dataProvider.subLevel.length}");
     });
@@ -64,6 +64,9 @@ class _logo_category_screenState extends State<logo_category_screen> {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        if (dataProvider.soundOn == true) {
+                          dataProvider.initOnTap();
+                        }
                         Navigator.pop(context);
                       },
                       child: Container(
@@ -209,6 +212,9 @@ class _logo_category_screenState extends State<logo_category_screen> {
                         AdsRN().showFullScreen(
                           context: context,
                           onComplete: () {
+                            if (dataProvider.soundOn == true) {
+                              dataProvider.initOnTap();
+                            }
                             Navigator.pushNamed(
                               context,
                               one_logo_screen.routeName,
