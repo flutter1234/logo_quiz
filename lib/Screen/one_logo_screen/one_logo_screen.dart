@@ -863,80 +863,82 @@ class _one_logo_screenState extends State<one_logo_screen> {
                       : 1.sh / 4,
               left: 18.w,
               right: 18.w,
-              child: Builder(builder: (contexts) {
-                return Container(
-                  width: 1.sw,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (dataProvider.soundOn == true) {
-                            dataProvider.initOnTap();
-                          }
-                          setState(() {
-                            dataProvider.shareImage(contexts);
-                          });
-                        },
-                        child: Container(
-                          height: isIpad ? 35.sp : 42.sp,
-                          width: isIpad ? 35.sp : 42.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                            border: Border.all(
-                              width: 2.w,
-                              color: dataProvider.levelContainer2,
+              child: Builder(
+                builder: (contexts) {
+                  return Container(
+                    width: 1.sw,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (dataProvider.soundOn == true) {
+                              dataProvider.initOnTap();
+                            }
+                            setState(() {
+                              dataProvider.shareImage(contexts);
+                            });
+                          },
+                          child: Container(
+                            height: isIpad ? 35.sp : 42.sp,
+                            width: isIpad ? 35.sp : 42.w,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              border: Border.all(
+                                width: 2.w,
+                                color: dataProvider.levelContainer2,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(5.sp),
+                              child: Image.asset("assets/images/share.png"),
                             ),
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.all(5.sp),
-                            child: Image.asset("assets/images/share.png"),
-                          ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true
-                            ? () {
-                                if (dataProvider.soundOn == true) {
-                                  dataProvider.initOnTap();
+                        GestureDetector(
+                          onTap: context.read<MainJson>().data![context.read<MainJson>().version!]['videoSpin'] == true
+                              ? () {
+                                  if (dataProvider.soundOn == true) {
+                                    dataProvider.initOnTap();
+                                  }
+                                  AdsRN().showFullScreen(
+                                    context: context,
+                                    onComplete: () {
+                                      dataProvider.coin = dataProvider.coin + 25;
+                                      storage.write("coin", dataProvider.coin);
+                                      setState(() {});
+                                    },
+                                  );
                                 }
-                                AdsRN().showFullScreen(
-                                  context: context,
-                                  onComplete: () {
-                                    dataProvider.coin = dataProvider.coin + 25;
-                                    storage.write("coin", dataProvider.coin);
-                                    setState(() {});
-                                  },
-                                );
-                              }
-                            : () {},
-                        child: Container(
-                          height: isIpad ? 35.sp : 42.sp,
-                          width: isIpad ? 35.sp : 42.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true
-                                ? Colors.white
-                                : Colors.grey.shade400,
-                            border: Border.all(
-                              width: 2.w,
-                              color: dataProvider.levelContainer2,
+                              : () {},
+                          child: Container(
+                            height: isIpad ? 35.sp : 42.sp,
+                            width: isIpad ? 35.sp : 42.w,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: context.read<MainJson>().data![context.read<MainJson>().version!]['videoSpin'] == true
+                                  ? Colors.white
+                                  : Colors.grey.shade400,
+                              border: Border.all(
+                                width: 2.w,
+                                color: dataProvider.levelContainer2,
+                              ),
                             ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(5.sp),
-                            child: Transform.rotate(
-                              angle: -0.3,
-                              child: Image.asset("assets/images/video.png"),
+                            child: Padding(
+                              padding: EdgeInsets.all(5.sp),
+                              child: Transform.rotate(
+                                angle: -0.3,
+                                child: Image.asset("assets/images/video.png"),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
