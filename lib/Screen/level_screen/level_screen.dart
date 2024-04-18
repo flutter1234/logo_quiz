@@ -42,8 +42,8 @@ class _levels_screenState extends State<levels_screen> {
             top: isSmall
                 ? 45.h
                 : isIpad
-                ? 30.h
-                : 50.h,
+                    ? 30.h
+                    : 50.h,
           ),
           child: Column(
             children: [
@@ -154,11 +154,12 @@ class _levels_screenState extends State<levels_screen> {
                           ),
                         ),
                         Positioned(
-                          left: -14.w,
+                          left: -12.w,
+                          top: -3.h,
                           child: Image(
-                            height: 30.sp,
+                            height: 35.sp,
                             image: AssetImage(
-                              'assets/images/coin.png',
+                              'assets/images/spin.png',
                             ),
                           ),
                         ),

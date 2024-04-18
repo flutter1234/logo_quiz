@@ -192,11 +192,12 @@ class _home_screenState extends State<home_screen> {
                                     ),
                                   ),
                                   Positioned(
-                                    left: -14.w,
+                                    left: -12.w,
+                                    top: -3.h,
                                     child: Image(
-                                      height: 30.sp,
+                                      height: 35.sp,
                                       image: AssetImage(
-                                        'assets/images/coin.png',
+                                        'assets/images/spin.png',
                                       ),
                                     ),
                                   ),
@@ -539,11 +540,12 @@ class _home_screenState extends State<home_screen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image(
-                                    image: AssetImage('assets/images/coin.png'),
+                                    image: AssetImage('assets/images/spin.png'),
                                     height: isSmall ? 30.sp : 35.sp,
+                                    fit: BoxFit.fill,
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(left: 5.w),
+                                    padding: EdgeInsets.only(left: 10.w),
                                     child: Text(
                                       "Reward",
                                       style: GoogleFonts.lexend(
@@ -599,10 +601,11 @@ class _home_screenState extends State<home_screen> {
                                 children: [
                                   Image(
                                     image: AssetImage('assets/images/play.png'),
-                                    height: isSmall ? 30.sp : 35.sp,
+                                    height: isSmall ? 30.sp : 30.sp,
+                                    fit: BoxFit.fill,
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(left: isSmall ? 10.w : 10.w, right: isSmall ? 30.w : 20.w),
+                                    padding: EdgeInsets.only(left: isSmall ? 10.w : 15.w, right: isSmall ? 30.w : 20.w),
                                     child: Text(
                                       "Play",
                                       style: GoogleFonts.lexend(

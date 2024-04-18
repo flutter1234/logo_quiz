@@ -256,11 +256,12 @@ class _one_logo_screenState extends State<one_logo_screen> {
                             ),
                           ),
                           Positioned(
-                            left: -14.w,
+                            left: -12.w,
+                            top: -3.h,
                             child: Image(
-                              height: 30.sp,
+                              height: 35.sp,
                               image: AssetImage(
-                                'assets/images/coin.png',
+                                'assets/images/spin.png',
                               ),
                             ),
                           ),
@@ -700,15 +701,16 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                     topRight: Radius.circular(5.r),
                                     bottomRight: Radius.circular(5.r),
                                   ),
-                                  color: Colors.green,
+                                  color: Colors.green.shade700,
                                 ),
                                 child: Row(
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.all(2.sp),
+                                      padding: EdgeInsets.all(1.2.sp),
                                       child: Image(
+                                        fit: BoxFit.cover,
                                         image: AssetImage(
-                                          'assets/images/coin.png',
+                                          'assets/images/spin.png',
                                         ),
                                       ),
                                     ),

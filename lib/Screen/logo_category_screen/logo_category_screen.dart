@@ -165,11 +165,12 @@ class _logo_category_screenState extends State<logo_category_screen> {
                           ),
                         ),
                         Positioned(
-                          left: -14.w,
+                          left: -12.w,
+                          top: -3.h,
                           child: Image(
-                            height: 30.sp,
+                            height: 35.sp,
                             image: AssetImage(
-                              'assets/images/coin.png',
+                              'assets/images/spin.png',
                             ),
                           ),
                         ),

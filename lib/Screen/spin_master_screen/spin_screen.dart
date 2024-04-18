@@ -170,11 +170,13 @@ class _spin_screenState extends State<spin_screen> {
                                     ),
                                   ),
                                   Positioned(
-                                    left: -14.w,
+                                    left: -12.w,
+                                    top: -3.h,
                                     child: Image(
-                                      height: 30.sp,
+                                      fit: BoxFit.cover,
+                                      height: 35.sp,
                                       image: AssetImage(
-                                        'assets/images/coin.png',
+                                        'assets/images/spin.png',
                                       ),
                                     ),
                                   ),
@@ -273,7 +275,8 @@ class _spin_screenState extends State<spin_screen> {
                                                     height: 45.sp,
                                                     width: 45.sp,
                                                     child: Image(
-                                                      image: AssetImage('assets/images/coin.png'),
+                                                      fit: BoxFit.cover,
+                                                      image: AssetImage('assets/images/spin.png'),
                                                     ),
                                                   ),
                                                   Column(
@@ -381,9 +384,10 @@ class _spin_screenState extends State<spin_screen> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Image(
+                                            fit: BoxFit.cover,
                                             height: 45.sp,
                                             width: 45.w,
-                                            image: AssetImage('assets/images/coin.png'),
+                                            image: AssetImage('assets/images/spin.png'),
                                           ),
                                           SizedBox(width: 15.w),
                                           Text(
