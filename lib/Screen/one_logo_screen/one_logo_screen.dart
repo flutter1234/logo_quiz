@@ -7,6 +7,7 @@ import 'package:logo_quiz/AdPlugin/Ads/FullScreen/Ads.dart';
 import 'package:logo_quiz/AdPlugin/MainJson/MainJson.dart';
 import 'package:logo_quiz/Provider/api_provider.dart';
 import 'package:logo_quiz/main.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -42,6 +43,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
   void initState() {
     Api dataProvider = Provider.of<Api>(context, listen: false);
     List ansList2 = [];
+    print("length =====>>>${widget.length}");
     ansList = storage.read(widget.oneData['name']) ?? [];
     logoIsComplete = storage.read("BOOL-${widget.oneData['name']}") ?? false;
     filledAns = storage.read("filledAns-${widget.oneData['name']}") ?? [];
@@ -283,8 +285,29 @@ class _one_logo_screenState extends State<one_logo_screen> {
                   ),
                 ),
                 SizedBox(
-                  height: 10.h,
+                  height: 5.h,
                 ),
+                LinearPercentIndicator(
+                  lineHeight: 15.sp,
+                  padding: EdgeInsets.symmetric(horizontal: 60.sp),
+                  barRadius: Radius.circular(10.r),
+                  percent: completeLogo.length / widget.length,
+                  backgroundColor: Colors.black26,
+                  progressColor: Colors.green,
+                  center: Text(
+                    "${completeLogo.length}/${widget.length}",
+                    style: GoogleFonts.lexend(
+                      fontSize: isSmall
+                          ? 10.sp
+                          : isIpad
+                              ? 10.sp
+                              : 12.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5.h),
                 Padding(
                   padding: EdgeInsets.only(left: 25.w, right: 8.w),
                   child: Row(
@@ -294,7 +317,8 @@ class _one_logo_screenState extends State<one_logo_screen> {
                         height: isIpad ? 120.sp : 175.sp,
                         width: isIpad ? 120.w : 175.w,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15.r),
+                          border: Border.all(width: 3.w, color: Colors.grey.shade600),
+                          borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Screenshot(
                           controller: dataProvider.screenshotController,
@@ -558,13 +582,14 @@ class _one_logo_screenState extends State<one_logo_screen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          if (dataProvider.coin > 50) {
+                          if (dataProvider.soundOn == true) {
+                            dataProvider.initOnTap();
+                          }
+                          if (dataProvider.coin >= 50) {
                             AdsRN().showFullScreen(
                               context: context,
                               onComplete: () {
-                                if (dataProvider.soundOn == true) {
-                                  dataProvider.initOnTap();
-                                }
+                                String tempAns = "";
                                 dataProvider.coin = dataProvider.coin - 50;
                                 storage.write("coin", dataProvider.coin);
                                 dataProvider.totalHint = dataProvider.totalHint + 1;
@@ -604,6 +629,40 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                     }
                                   }
                                 }
+                                for (int i = 0; i < correctList.length; i++) {
+                                  for (int j = 0; j < correctList[i].length; j++) {
+                                    tempAns = tempAns + ansList[i][j]['ans'];
+                                    if (areAllWordsComplete()) {
+                                      for (int k = 0; k < correctList.length; k++) {
+                                        for (int l = 0; l < correctList[k].length; l++) {
+                                          if (ansList[k][l]['ans'] == correctList[k][l]) {
+                                            ansList[k][l]['color'] = "green";
+                                            storage.write(widget.oneData['name'], ansList);
+                                          }
+                                        }
+                                      }
+                                    }
+                                    if (tempAns == widget.oneData['name']) {
+                                      if (!completeLogo.contains(widget.oneData['name'])) {
+                                        completeLogo.add(widget.oneData['name']);
+                                        storage.write("LEVEL ${widget.index}", completeLogo);
+                                        print("completeLogo ======>>>${completeLogo}");
+                                        dataProvider.coin = dataProvider.coin + 10;
+                                        storage.write("coin", dataProvider.coin);
+                                      }
+                                    }
+                                    if (completeLogo.length == widget.length) {
+                                      dataProvider.star = dataProvider.star + 5;
+                                      dataProvider.levelLength = dataProvider.levelLength + 1;
+                                      setState(() {});
+                                      storage.write("star", dataProvider.star);
+                                      storage.write("levelLength", dataProvider.levelLength);
+                                    }
+                                  }
+                                  if (i < correctList.length - 1) {
+                                    tempAns = tempAns + " ";
+                                  }
+                                }
                               },
                             );
                           }
@@ -622,7 +681,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                 border: Border.all(width: 1.w, color: Colors.white),
                                 borderRadius: BorderRadius.circular(5.r),
                                 // color: dataProvider.levelContainer2,
-                                color: dataProvider.coin > 50 ? dataProvider.levelContainer2 : Colors.grey.shade500,
+                                color: dataProvider.coin >= 50 ? dataProvider.levelContainer2 : Colors.grey.shade500,
                               ),
                               child: Icon(
                                 Icons.emoji_objects_outlined,
@@ -724,6 +783,14 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                           storage.write("coin", dataProvider.coin);
                                         }
                                       }
+                                      if (completeLogo.length > widget.length / 2) {
+                                        if (!dataProvider.lockList.contains("LEVEL ${widget.index + 1}")) {
+                                          dataProvider.lockList.add("LEVEL ${widget.index + 1}");
+                                        }
+                                        setState(() {});
+                                        storage.write("lockList", dataProvider.lockList);
+                                        print("lockList ====>>${dataProvider.lockList}");
+                                      }
                                       if (completeLogo.length == widget.length) {
                                         dataProvider.star = dataProvider.star + 5;
                                         dataProvider.levelLength = dataProvider.levelLength + 1;
@@ -741,9 +808,15 @@ class _one_logo_screenState extends State<one_logo_screen> {
                                   print(tempAns);
                                   if (tempAns != widget.oneData['name']) {
                                     if (lifeLine != 0) {
-                                      areAllWordsComplete() ? lifeLine-- : null;
+                                      if (areAllWordsComplete()) {
+                                        lifeLine--;
+                                        dataProvider.failedAttempts = dataProvider.failedAttempts + 1;
+                                        print("failedAttempts =====>>${dataProvider.failedAttempts}");
+                                        setState(() {});
+                                      }
                                     }
                                     storage.write("lifeLine-${widget.oneData['name']}", lifeLine);
+                                    storage.write("failedAttempts", dataProvider.failedAttempts);
                                   }
                                   setState(() {});
                                 }
@@ -788,72 +861,80 @@ class _one_logo_screenState extends State<one_logo_screen> {
                       : 1.sh / 4,
               left: 18.w,
               right: 18.w,
-              child: Container(
-                width: 1.sw,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          dataProvider.shareImage();
-                        });
-                      },
-                      child: Container(
-                        height: isIpad ? 35.sp : 42.sp,
-                        width: isIpad ? 35.sp : 42.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          border: Border.all(
-                            width: 2.w,
-                            color: dataProvider.levelContainer2,
+              child: Builder(builder: (contexts) {
+                return Container(
+                  width: 1.sw,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (dataProvider.soundOn == true) {
+                            dataProvider.initOnTap();
+                          }
+                          setState(() {
+                            dataProvider.shareImage(contexts);
+                          });
+                        },
+                        child: Container(
+                          height: isIpad ? 35.sp : 42.sp,
+                          width: isIpad ? 35.sp : 42.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            border: Border.all(
+                              width: 2.w,
+                              color: dataProvider.levelContainer2,
+                            ),
                           ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(5.sp),
-                          child: Image.asset("assets/images/share.png"),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true
-                          ? () {
-                              AdsRN().showFullScreen(
-                                context: context,
-                                onComplete: () {
-                                  dataProvider.coin = dataProvider.coin + 25;
-                                  storage.write("coin", dataProvider.coin);
-                                  setState(() {});
-                                },
-                              );
-                            }
-                          : () {},
-                      child: Container(
-                        height: isIpad ? 35.sp : 42.sp,
-                        width: isIpad ? 35.sp : 42.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true
-                              ? Colors.white
-                              : Colors.grey.shade400,
-                          border: Border.all(
-                            width: 2.w,
-                            color: dataProvider.levelContainer2,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(5.sp),
-                          child: Transform.rotate(
-                            angle: -0.3,
-                            child: Image.asset("assets/images/video.png"),
+                          child: Padding(
+                            padding: EdgeInsets.all(5.sp),
+                            child: Image.asset("assets/images/share.png"),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                      GestureDetector(
+                        onTap: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true
+                            ? () {
+                                if (dataProvider.soundOn == true) {
+                                  dataProvider.initOnTap();
+                                }
+                                AdsRN().showFullScreen(
+                                  context: context,
+                                  onComplete: () {
+                                    dataProvider.coin = dataProvider.coin + 25;
+                                    storage.write("coin", dataProvider.coin);
+                                    setState(() {});
+                                  },
+                                );
+                              }
+                            : () {},
+                        child: Container(
+                          height: isIpad ? 35.sp : 42.sp,
+                          width: isIpad ? 35.sp : 42.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: context.read<MainJson>().data![context.read<MainJson>().version!]['globalConfig']['globalAdFlag'] == true
+                                ? Colors.white
+                                : Colors.grey.shade400,
+                            border: Border.all(
+                              width: 2.w,
+                              color: dataProvider.levelContainer2,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(5.sp),
+                            child: Transform.rotate(
+                              angle: -0.3,
+                              child: Image.asset("assets/images/video.png"),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
             ),
           ],
         ),

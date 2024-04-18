@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:logo_quiz/AdPlugin/Ads/Banner/BannerWrapper.dart';
 import 'package:logo_quiz/AdPlugin/Ads/FullScreen/Ads.dart';
+import 'package:logo_quiz/AdPlugin/Ads/Native/NativeRN.dart';
 import 'package:logo_quiz/AdPlugin/MainJson/MainJson.dart';
 import 'package:logo_quiz/Provider/api_provider.dart';
 import 'package:logo_quiz/Screen/level_screen/level_screen.dart';
@@ -33,6 +35,7 @@ class _home_screenState extends State<home_screen> {
     dataProvider.musicOn = storage.read("musicOn") ?? true;
     dataProvider.totalHint = storage.read("totalHint") ?? 0;
     dataProvider.levelLength = storage.read("levelLength") ?? 0;
+    dataProvider.failedAttempts = storage.read("failedAttempts") ?? 0;
     context.read<Api>().logoQuiz(context.read<MainJson>().data!['assets']['wordJson']).then((value) {
       lengthData();
       isLoading = false;
@@ -60,479 +63,530 @@ class _home_screenState extends State<home_screen> {
     Api dataProvider = Provider.of<Api>(context, listen: true);
     return Stack(
       children: [
-        Scaffold(
-          backgroundColor: dataProvider.backGround,
-          body: isLoading
-              ? Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                  ),
-                )
-              : Padding(
-                  padding: EdgeInsets.only(
-                    top: isSmall
-                        ? 30.h
-                        : isIpad
-                            ? 30.h
-                            : 50.h,
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10.sp),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        BannerWrapper(
+          parentContext: context,
+          child: Scaffold(
+            backgroundColor: dataProvider.backGround,
+            body: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  )
+                : Padding(
+                    padding: EdgeInsets.only(
+                      top: isSmall
+                          ? 25.h
+                          : isIpad
+                              ? 30.h
+                              : 50.h,
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10.sp),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  if (dataProvider.soundOn == true) {
+                                    dataProvider.initOnTap();
+                                  }
+                                  settingDialog = true;
+                                  lengthData();
+                                  setState(() {});
+                                },
+                                child: Container(
+                                  height: 30.sp,
+                                  width: 30.w,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(width: 1.w, color: Colors.white),
+                                    color: dataProvider.levelContainer2,
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: Icon(
+                                    Icons.settings,
+                                    size: 22.sp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Container(
+                                    height: 30.sp,
+                                    width: 100.w,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(width: 1.w, color: Colors.white),
+                                      color: Colors.black54,
+                                      borderRadius: BorderRadius.circular(5.r),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "${dataProvider.star}",
+                                        style: GoogleFonts.lexend(
+                                          fontSize: 20.sp,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: -14.w,
+                                    child: Image(
+                                      height: 30.sp,
+                                      image: AssetImage(
+                                        'assets/images/star.png',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Container(
+                                    height: 30.sp,
+                                    width: 100.w,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(width: 1.w, color: Colors.white),
+                                      // border: Border.all(width: 2.w, color: HexColor('0096C7')),
+                                      color: Colors.black54,
+                                      borderRadius: BorderRadius.circular(5.r),
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 5.sp),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Spacer(),
+                                          Text(
+                                            "${dataProvider.coin}",
+                                            style: GoogleFonts.lexend(
+                                              fontSize: 20.sp,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Container(
+                                            height: 20.sp,
+                                            width: 20.w,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(5.r),
+                                              color: Colors.green,
+                                            ),
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.add,
+                                                size: 18.sp,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: -14.w,
+                                    child: Image(
+                                      height: 30.sp,
+                                      image: AssetImage(
+                                        'assets/images/coin.png',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.w, top: isSmall ? 10.h : 20.h),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "LOGO GAME",
+                              style: GoogleFonts.lexend(
+                                fontSize: isIpad
+                                    ? 25.sp
+                                    : isSmall
+                                        ? 22.sp
+                                        : 30.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.w),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Quiz your brands knowledge",
+                              style: GoogleFonts.lexend(
+                                fontSize: isIpad
+                                    ? 18.sp
+                                    : isSmall
+                                        ? 18.sp
+                                        : 20.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Spacer(flex: 1),
+                        Row(
                           children: [
                             GestureDetector(
                               onTap: () {
                                 if (dataProvider.soundOn == true) {
                                   dataProvider.initOnTap();
                                 }
-                                settingDialog = true;
-                                lengthData();
+                                dataProvider.themeChangeDialog = true;
                                 setState(() {});
                               },
-                              child: Container(
-                                height: 30.sp,
-                                width: 30.w,
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 1.w, color: Colors.white),
-                                  color: dataProvider.levelContainer2,
-                                  borderRadius: BorderRadius.circular(5.r),
-                                ),
-                                child: Icon(
-                                  Icons.settings,
-                                  size: 22.sp,
-                                  color: Colors.white,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 10.w, top: isSmall ? 5.h : 10.h),
+                                  child: Container(
+                                    height: isIpad
+                                        ? 40.sp
+                                        : isSmall
+                                            ? 40.sp
+                                            : 45.sp,
+                                    width: isIpad
+                                        ? 40.w
+                                        : isSmall
+                                            ? 40.w
+                                            : 45.w,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(width: 1.w, color: Colors.white),
+                                      shape: BoxShape.circle,
+                                      color: Colors.blueAccent.shade400,
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(5.sp),
+                                      child: Image.asset("assets/images/themes.png"),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                            Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Container(
-                                  height: 30.sp,
-                                  width: 100.w,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(width: 1.w, color: Colors.white),
-                                    color: Colors.black54,
-                                    borderRadius: BorderRadius.circular(5.r),
+                            dataProvider.themeChangeDialog == true
+                                ? Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 25.sp),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(top: isSmall ? 10.h : 12.h, right: 12.w),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black45,
+                                            border: Border.all(width: 1.w, color: Colors.white),
+                                            borderRadius: BorderRadius.circular(10.r),
+                                          ),
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: isSmall ? 2.sp : 5.sp),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    dataProvider.backGround = HexColor('023E8A');
+                                                    storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
+                                                    dataProvider.levelContainer1 = HexColor('3271a5');
+                                                    storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
+                                                    dataProvider.levelContainer2 = HexColor('1477d2');
+                                                    storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
+                                                    if (dataProvider.soundOn == true) {
+                                                      dataProvider.initOnTap();
+                                                    }
+                                                    dataProvider.themeChangeDialog = false;
+                                                    setState(() {});
+                                                  },
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(5.sp),
+                                                    child: Container(
+                                                      height: isSmall ? 40.sp : 45.sp,
+                                                      width: isSmall ? 40.w : 45.w,
+                                                      decoration: BoxDecoration(
+                                                        color: HexColor('023E8A'),
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                          width: 1.w,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    dataProvider.backGround = HexColor('79305a');
+                                                    storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
+                                                    dataProvider.levelContainer1 = HexColor('8e3563');
+                                                    storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
+                                                    dataProvider.levelContainer2 = HexColor('b33b72');
+                                                    storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
+                                                    if (dataProvider.soundOn == true) {
+                                                      dataProvider.initOnTap();
+                                                    }
+                                                    dataProvider.themeChangeDialog = false;
+
+                                                    setState(() {});
+                                                  },
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(5.sp),
+                                                    child: Container(
+                                                      height: isSmall ? 40.sp : 45.sp,
+                                                      width: isSmall ? 40.w : 45.w,
+                                                      decoration: BoxDecoration(
+                                                        color: HexColor('79305a'),
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                          width: 1.w,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    dataProvider.backGround = HexColor('2d3b43');
+                                                    storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
+                                                    dataProvider.levelContainer1 = HexColor('3e515b');
+                                                    storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
+                                                    dataProvider.levelContainer2 = HexColor('4d6471');
+                                                    storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
+                                                    if (dataProvider.soundOn == true) {
+                                                      dataProvider.initOnTap();
+                                                    }
+                                                    dataProvider.themeChangeDialog = false;
+
+                                                    setState(() {});
+                                                  },
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(5.sp),
+                                                    child: Container(
+                                                      height: isSmall ? 40.sp : 45.sp,
+                                                      width: isSmall ? 40.w : 45.w,
+                                                      decoration: BoxDecoration(
+                                                        color: HexColor('2d3b43'),
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                          width: 1.w,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    dataProvider.backGround = HexColor('d24e01');
+                                                    storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
+                                                    dataProvider.levelContainer1 = HexColor('dc6601');
+                                                    storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
+                                                    dataProvider.levelContainer2 = HexColor('e88504');
+                                                    storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
+                                                    if (dataProvider.soundOn == true) {
+                                                      dataProvider.initOnTap();
+                                                    }
+                                                    dataProvider.themeChangeDialog = false;
+                                                    setState(() {});
+                                                  },
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(5.sp),
+                                                    child: Container(
+                                                      height: isSmall ? 40.sp : 45.sp,
+                                                      width: isSmall ? 40.w : 45.w,
+                                                      decoration: BoxDecoration(
+                                                        color: HexColor('d24e01'),
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                          width: 1.w,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        dataProvider.themeChangeDialog == true
+                                            ? Positioned(
+                                                right: 0.w,
+                                                top: 0.h,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (dataProvider.soundOn == true) {
+                                                        dataProvider.initOnTap();
+                                                      }
+                                                      dataProvider.themeChangeDialog = false;
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    height: isSmall ? 25.sp : 30.sp,
+                                                    width: isSmall ? 25.sp : 30.w,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(6.r),
+                                                        color: dataProvider.levelContainer2,
+                                                        border: Border.all(width: 1.w, color: Colors.white)),
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      size: 20.sp,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : SizedBox(),
+                                      ],
+                                    ),
+                                  )
+                                : SizedBox(),
+                          ],
+                        ),
+                        NativeRN(parentContext: context),
+                        Spacer(flex: 2),
+                        GestureDetector(
+                          onTap: () {
+                            if (dataProvider.soundOn == true) {
+                              dataProvider.initOnTap();
+                            }
+                            AdsRN().showFullScreen(
+                              context: context,
+                              onComplete: () {
+                                Navigator.pushNamed(context, spin_screen.routeName).then((value) {
+                                  setState(() {});
+                                });
+                              },
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(isSmall ? 3.sp : 5.sp),
+                            child: Container(
+                              height: isIpad
+                                  ? 50.sp
+                                  : isSmall
+                                      ? 45.sp
+                                      : 60.sp,
+                              width: isIpad
+                                  ? 180.w
+                                  : isSmall
+                                      ? 180.w
+                                      : 200.w,
+                              decoration: BoxDecoration(
+                                color: dataProvider.levelContainer2,
+                                borderRadius: BorderRadius.circular(isIpad ? 40.r : 15.r),
+                                border: Border.all(width: 2.w, color: Colors.white),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image(
+                                    image: AssetImage('assets/images/coin.png'),
+                                    height: 35.sp,
                                   ),
-                                  child: Center(
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 5.w),
                                     child: Text(
-                                      "${dataProvider.star}",
+                                      "Reward",
                                       style: GoogleFonts.lexend(
-                                        fontSize: 20.sp,
+                                        fontSize: isIpad
+                                            ? 25.sp
+                                            : isSmall
+                                                ? 24.sp
+                                                : 28.sp,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                   ),
-                                ),
-                                Positioned(
-                                  left: -14.w,
-                                  child: Image(
-                                    height: 30.sp,
-                                    image: AssetImage(
-                                      'assets/images/star.png',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Container(
-                                  height: 30.sp,
-                                  width: 100.w,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(width: 1.w, color: Colors.white),
-                                    // border: Border.all(width: 2.w, color: HexColor('0096C7')),
-                                    color: Colors.black54,
-                                    borderRadius: BorderRadius.circular(5.r),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 5.sp),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Spacer(),
-                                        Text(
-                                          "${dataProvider.coin}",
-                                          style: GoogleFonts.lexend(
-                                            fontSize: 20.sp,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Container(
-                                          height: 20.sp,
-                                          width: 20.w,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5.r),
-                                            color: Colors.green,
-                                          ),
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.add,
-                                              size: 18.sp,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: -14.w,
-                                  child: Image(
-                                    height: 30.sp,
-                                    image: AssetImage(
-                                      'assets/images/coin.png',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 15.h),
-                      Padding(
-                        padding: EdgeInsets.only(left: 10.w, top: 10.h),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "LOGO GAME",
-                            style: GoogleFonts.lexend(
-                              fontSize: isIpad ? 25.sp : 30.sp,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 10.w),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Quiz your brands knowledge",
-                            style: GoogleFonts.lexend(
-                              fontSize: isIpad ? 18.sp : 20.sp,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Spacer(
-                        flex: 3,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          AdsRN().showFullScreen(
-                            context: context,
-                            onComplete: () {
-                              if (dataProvider.soundOn == true) {
-                                dataProvider.initOnTap();
-                              }
-                              Navigator.pushNamed(context, levels_screen.routeName).then((value) {
-                                setState(() {});
-                              });
-                            },
-                          );
-                        },
-                        child: Container(
-                          height: isIpad ? 50.sp : 60.sp,
-                          width: isIpad ? 180.w : 200.w,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(isIpad ? 40.r : 25.r),
-                            border: Border.all(width: 3.w, color: Colors.white),
-                            image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: AssetImage("assets/images/play_button.png"),
-                            ),
-                          ),
-                          child: Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(bottom: 8.h),
-                              child: Text(
-                                "Play",
-                                style: GoogleFonts.lexend(
-                                  fontSize: isIpad ? 25.sp : 30.sp,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                ),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Spacer(
-                        flex: 1,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (dataProvider.soundOn == true) {
-                                dataProvider.initOnTap();
-                              }
-                              dataProvider.themeChangeDialog = true;
-                              setState(() {});
-                            },
+                        GestureDetector(
+                          onTap: () {
+                            if (dataProvider.soundOn == true) {
+                              dataProvider.initOnTap();
+                            }
+                            AdsRN().showFullScreen(
+                              context: context,
+                              onComplete: () {
+                                Navigator.pushNamed(context, levels_screen.routeName).then((value) {
+                                  setState(() {});
+                                });
+                              },
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(isSmall ? 3.sp : 5.sp),
                             child: Container(
-                              height: isIpad ? 40.sp : 50.sp,
-                              width: isIpad ? 40.w : 50.w,
+                              height: isIpad
+                                  ? 50.sp
+                                  : isSmall
+                                      ? 45.sp
+                                      : 60.sp,
+                              width: isIpad
+                                  ? 180.w
+                                  : isSmall
+                                      ? 180.w
+                                      : 200.w,
                               decoration: BoxDecoration(
-                                border: Border.all(width: 1.w, color: Colors.white),
-                                shape: BoxShape.circle,
-                                color: Colors.blueAccent.shade400,
+                                color: dataProvider.levelContainer2,
+                                borderRadius: BorderRadius.circular(isIpad ? 40.r : 15.r),
+                                border: Border.all(width: 2.w, color: Colors.white),
                               ),
-                              child: Padding(
-                                padding: EdgeInsets.all(6.sp),
-                                child: Image.asset("assets/images/themes.png"),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image(
+                                    image: AssetImage('assets/images/play.png'),
+                                    height: 35.sp,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 10.w, right: 20.w),
+                                    child: Text(
+                                      "Play",
+                                      style: GoogleFonts.lexend(
+                                        fontSize: isIpad
+                                            ? 25.sp
+                                            : isSmall
+                                                ? 24.sp
+                                                : 30.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                          SizedBox(width: 25.w),
-                          GestureDetector(
-                            onTap: () {
-                              AdsRN().showFullScreen(
-                                context: context,
-                                onComplete: () {
-                                  if (dataProvider.soundOn == true) {
-                                    dataProvider.initOnTap();
-                                  }
-                                  Navigator.pushNamed(context, spin_screen.routeName).then((value) {
-                                    setState(() {});
-                                  });
-                                },
-                              );
-                            },
-                            child: Container(
-                              height: isIpad ? 40.sp : 50.sp,
-                              width: isIpad ? 40.w : 50.w,
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 1.w, color: Colors.white),
-                                shape: BoxShape.circle,
-                                color: Colors.blueAccent.shade400,
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(5.sp),
-                                child: Image.asset("assets/images/dollar.png"),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                    ],
+                        ),
+                        Spacer(flex: 1),
+                        SizedBox(width: 25.w),
+                        Spacer(),
+                      ],
+                    ),
                   ),
-                ),
+          ),
         ),
-        dataProvider.themeChangeDialog == true
-            ? Scaffold(
-                backgroundColor: Colors.transparent,
-                body: Container(
-                  height: 1.sh,
-                  width: 1.sw,
-                  color: Colors.black45,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 25.sp),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 2.w, color: Colors.white),
-                            gradient: LinearGradient(
-                              begin: Alignment.topRight,
-                              end: Alignment.center,
-                              colors: [
-                                Colors.black54,
-                                Colors.black54,
-                                // HexColor('1477d2'),
-                                // HexColor('023E8A'),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(10.r),
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: isIpad ? 30.sp : 40.sp,
-                                width: 1.sw,
-                                decoration: BoxDecoration(
-                                  color: HexColor('023E8A'),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10.r),
-                                    topRight: Radius.circular(10.r),
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10.sp),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(width: 25.w),
-                                      Text(
-                                        "THEME",
-                                        style: GoogleFonts.lexend(
-                                          fontSize: isIpad ? 18.sp : 22.sp,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            if (dataProvider.soundOn == true) {
-                                              dataProvider.initOnTap();
-                                            }
-                                            dataProvider.themeChangeDialog = false;
-                                          });
-                                        },
-                                        child: Icon(
-                                          Icons.close,
-                                          size: isIpad ? 25.sp : 28.sp,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: isIpad ? 8.sp : 10.sp),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        dataProvider.backGround = HexColor('023E8A');
-                                        storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
-                                        dataProvider.levelContainer1 = HexColor('3271a5');
-                                        storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
-                                        dataProvider.levelContainer2 = HexColor('1477d2');
-                                        storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
-                                        if (dataProvider.soundOn == true) {
-                                          dataProvider.initOnTap();
-                                        }
-                                        dataProvider.themeChangeDialog = false;
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        height: isIpad ? 150.sp : 150.sp,
-                                        width: 140.w,
-                                        decoration: BoxDecoration(
-                                          color: HexColor('023E8A'),
-                                          border: Border.all(width: 1.w, color: Colors.white),
-                                          borderRadius: BorderRadius.circular(10.r),
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        dataProvider.backGround = HexColor('79305a');
-                                        storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
-                                        dataProvider.levelContainer1 = HexColor('8e3563');
-                                        storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
-                                        dataProvider.levelContainer2 = HexColor('b33b72');
-                                        storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
-                                        if (dataProvider.soundOn == true) {
-                                          dataProvider.initOnTap();
-                                        }
-                                        dataProvider.themeChangeDialog = false;
-
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        height: isIpad ? 150.sp : 150.sp,
-                                        width: 140.w,
-                                        decoration: BoxDecoration(
-                                          color: HexColor('79305a'),
-                                          borderRadius: BorderRadius.circular(10.r),
-                                          border: Border.all(width: 1.w, color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: isIpad ? 8.sp : 10.sp),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        dataProvider.backGround = HexColor('2d3b43');
-                                        storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
-                                        dataProvider.levelContainer1 = HexColor('3e515b');
-                                        storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
-                                        dataProvider.levelContainer2 = HexColor('4d6471');
-                                        storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
-                                        if (dataProvider.soundOn == true) {
-                                          dataProvider.initOnTap();
-                                        }
-                                        dataProvider.themeChangeDialog = false;
-
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        height: isIpad ? 150.sp : 150.sp,
-                                        width: 140.w,
-                                        decoration: BoxDecoration(
-                                          color: HexColor('2d3b43'),
-                                          border: Border.all(width: 1.w, color: Colors.white),
-                                          borderRadius: BorderRadius.circular(10.r),
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        dataProvider.backGround = HexColor('df2c14');
-                                        storage.write("backGround", dataProvider.backGround.value.toRadixString(16));
-                                        dataProvider.levelContainer1 = HexColor('ed3419');
-                                        storage.write("levelContainer1", dataProvider.levelContainer1.value.toRadixString(16));
-                                        dataProvider.levelContainer2 = HexColor('fb3b1e');
-                                        storage.write("levelContainer2", dataProvider.levelContainer2.value.toRadixString(16));
-                                        if (dataProvider.soundOn == true) {
-                                          dataProvider.initOnTap();
-                                        }
-                                        dataProvider.themeChangeDialog = false;
-                                        setState(() {});
-                                      },
-                                      child: Container(
-                                        height: isIpad ? 150.sp : 150.sp,
-                                        width: 140.w,
-                                        decoration: BoxDecoration(
-                                          color: HexColor('df2c14'),
-                                          borderRadius: BorderRadius.circular(10.r),
-                                          border: Border.all(width: 1.w, color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : SizedBox(),
         settingDialog == true
             ? Scaffold(
                 backgroundColor: Colors.transparent,
@@ -726,6 +780,9 @@ class _home_screenState extends State<home_screen> {
                                 padding: EdgeInsets.symmetric(horizontal: 40.sp, vertical: 5.sp),
                                 child: GestureDetector(
                                   onTap: () {
+                                    if (dataProvider.soundOn == true) {
+                                      dataProvider.initOnTap();
+                                    }
                                     dataProvider.url = context.read<MainJson>().data!['assets']['contactUs'];
                                     setState(() {});
                                     dataProvider.launchurl();
@@ -755,6 +812,9 @@ class _home_screenState extends State<home_screen> {
                                 padding: EdgeInsets.symmetric(horizontal: 40.sp, vertical: 5.sp),
                                 child: GestureDetector(
                                   onTap: () {
+                                    if (dataProvider.soundOn == true) {
+                                      dataProvider.initOnTap();
+                                    }
                                     dataProvider.url = context.read<MainJson>().data!['assets']['shareApp'];
                                     setState(() {});
                                     dataProvider.launchurl();
@@ -804,7 +864,7 @@ class _home_screenState extends State<home_screen> {
                                         child: Text(
                                           "PRIVACY POLICY",
                                           style: GoogleFonts.lexend(
-                                            fontSize: isIpad ? 18.sp : 14.sp,
+                                            fontSize: isIpad ? 12.sp : 14.sp,
                                             color: Colors.white,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -830,7 +890,7 @@ class _home_screenState extends State<home_screen> {
                                         child: Text(
                                           "TERMS OF USE",
                                           style: GoogleFonts.lexend(
-                                            fontSize: isIpad ? 18.sp : 14.sp,
+                                            fontSize: isIpad ? 12.sp : 14.sp,
                                             color: Colors.white,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -950,7 +1010,11 @@ class _home_screenState extends State<home_screen> {
                                             Text(
                                               "TOTAL QUESTIONS",
                                               style: GoogleFonts.lexend(
-                                                fontSize: isIpad ? 18.sp : 16.sp,
+                                                fontSize: isIpad
+                                                    ? 12.sp
+                                                    : isSmall
+                                                        ? 14.sp
+                                                        : 16.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w900,
                                               ),
@@ -958,7 +1022,11 @@ class _home_screenState extends State<home_screen> {
                                             Text(
                                               "${logoLength}",
                                               style: GoogleFonts.lexend(
-                                                fontSize: isIpad ? 18.sp : 16.sp,
+                                                fontSize: isIpad
+                                                    ? 12.sp
+                                                    : isSmall
+                                                        ? 14.sp
+                                                        : 16.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -978,7 +1046,11 @@ class _home_screenState extends State<home_screen> {
                                             Text(
                                               "SOLVED",
                                               style: GoogleFonts.lexend(
-                                                fontSize: isIpad ? 18.sp : 14.sp,
+                                                fontSize: isIpad
+                                                    ? 12.sp
+                                                    : isSmall
+                                                        ? 12.sp
+                                                        : 14.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -986,7 +1058,11 @@ class _home_screenState extends State<home_screen> {
                                             Text(
                                               "${solvedQuestion}",
                                               style: GoogleFonts.lexend(
-                                                fontSize: isIpad ? 18.sp : 14.sp,
+                                                fontSize: isIpad
+                                                    ? 12.sp
+                                                    : isSmall
+                                                        ? 12.sp
+                                                        : 14.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -1002,7 +1078,11 @@ class _home_screenState extends State<home_screen> {
                                             Text(
                                               "UNSOLVED",
                                               style: GoogleFonts.lexend(
-                                                fontSize: isIpad ? 18.sp : 14.sp,
+                                                fontSize: isIpad
+                                                    ? 12.sp
+                                                    : isSmall
+                                                        ? 12.sp
+                                                        : 14.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -1010,7 +1090,11 @@ class _home_screenState extends State<home_screen> {
                                             Text(
                                               "${logoLength - solvedQuestion}",
                                               style: GoogleFonts.lexend(
-                                                fontSize: isIpad ? 18.sp : 14.sp,
+                                                fontSize: isIpad
+                                                    ? 12.sp
+                                                    : isSmall
+                                                        ? 12.sp
+                                                        : 14.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -1030,7 +1114,11 @@ class _home_screenState extends State<home_screen> {
                                     Text(
                                       "GAME PROGRESS",
                                       style: GoogleFonts.lexend(
-                                        fontSize: isIpad ? 18.sp : 18.sp,
+                                        fontSize: isIpad
+                                            ? 14.sp
+                                            : isSmall
+                                                ? 16.sp
+                                                : 18.sp,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -1038,7 +1126,11 @@ class _home_screenState extends State<home_screen> {
                                     Text(
                                       "${((solvedQuestion / logoLength) * 100).toStringAsFixed(1)}%",
                                       style: GoogleFonts.lexend(
-                                        fontSize: isIpad ? 18.sp : 18.sp,
+                                        fontSize: isIpad
+                                            ? 14.sp
+                                            : isSmall
+                                                ? 16.sp
+                                                : 18.sp,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -1065,7 +1157,11 @@ class _home_screenState extends State<home_screen> {
                                             Text(
                                               "TOTAL HINTS USED",
                                               style: GoogleFonts.lexend(
-                                                fontSize: isIpad ? 18.sp : 14.sp,
+                                                fontSize: isIpad
+                                                    ? 12.sp
+                                                    : isSmall
+                                                        ? 12.sp
+                                                        : 14.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -1073,7 +1169,11 @@ class _home_screenState extends State<home_screen> {
                                             Text(
                                               "${dataProvider.totalHint}",
                                               style: GoogleFonts.lexend(
-                                                fontSize: isIpad ? 18.sp : 14.sp,
+                                                fontSize: isIpad
+                                                    ? 12.sp
+                                                    : isSmall
+                                                        ? 12.sp
+                                                        : 14.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -1089,15 +1189,23 @@ class _home_screenState extends State<home_screen> {
                                             Text(
                                               "FAILED ATTEMPTS",
                                               style: GoogleFonts.lexend(
-                                                fontSize: isIpad ? 18.sp : 14.sp,
+                                                fontSize: isIpad
+                                                    ? 12.sp
+                                                    : isSmall
+                                                        ? 12.sp
+                                                        : 14.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700,
                                               ),
                                             ),
                                             Text(
-                                              "2000",
+                                              "${dataProvider.failedAttempts}",
                                               style: GoogleFonts.lexend(
-                                                fontSize: isIpad ? 18.sp : 14.sp,
+                                                fontSize: isIpad
+                                                    ? 12.sp
+                                                    : isSmall
+                                                        ? 12.sp
+                                                        : 14.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -1117,7 +1225,11 @@ class _home_screenState extends State<home_screen> {
                                     Text(
                                       "LEVELS COMPLETED",
                                       style: GoogleFonts.lexend(
-                                        fontSize: isIpad ? 18.sp : 18.sp,
+                                        fontSize: isIpad
+                                            ? 14.sp
+                                            : isSmall
+                                                ? 16.sp
+                                                : 18.sp,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -1125,7 +1237,11 @@ class _home_screenState extends State<home_screen> {
                                     Text(
                                       "${dataProvider.levelLength}",
                                       style: GoogleFonts.lexend(
-                                        fontSize: isIpad ? 18.sp : 18.sp,
+                                        fontSize: isIpad
+                                            ? 14.sp
+                                            : isSmall
+                                                ? 16.sp
+                                                : 18.sp,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w700,
                                       ),

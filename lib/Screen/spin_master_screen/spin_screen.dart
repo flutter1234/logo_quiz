@@ -191,7 +191,7 @@ class _spin_screenState extends State<spin_screen> {
                             itemBuilder: (context, index) {
                               return Column(
                                 children: [
-                                  index == 0 || dataProvider.spinList['data'][index]['spinDate'] != dataProvider.spinList['data'][index - 1]['spinDate']
+                                  index == 0 || dataProvider.spinList['data'][index]['date'] != dataProvider.spinList['data'][index - 1]['date']
                                       ? Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
@@ -213,7 +213,7 @@ class _spin_screenState extends State<spin_screen> {
                                                               : 10.sp),
                                                   child: Center(
                                                     child: Text(
-                                                      '${dataProvider.spinList['data'][index]['spinDate']}',
+                                                      '${dataProvider.spinList['data'][index]['date']}',
                                                       style: GoogleFonts.aboreto(
                                                         fontSize: isSmall
                                                             ? 20.sp
@@ -241,7 +241,7 @@ class _spin_screenState extends State<spin_screen> {
                                             dataProvider.initOnTap();
                                           }
                                           spinIndex = index;
-                                          if (!collectedList.contains(dataProvider.spinList['data'][index]['id'])) {
+                                          if (!collectedList.contains(dataProvider.spinList['data'][index]['codeurl'])) {
                                             AdsRN().showFullScreen(
                                               context: context,
                                               onComplete: () {
@@ -280,7 +280,7 @@ class _spin_screenState extends State<spin_screen> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: [
                                                       Text(
-                                                        "${dataProvider.spinList['data'][index]['spinDate']}",
+                                                        "${dataProvider.spinList['data'][index]['date']}",
                                                         style: GoogleFonts.lexend(
                                                           fontSize: isSmall
                                                               ? 20.sp
@@ -292,7 +292,7 @@ class _spin_screenState extends State<spin_screen> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        "${dataProvider.spinList['data'][index]['subject']}",
+                                                        "${dataProvider.spinList['data'][index]['title']}",
                                                         style: GoogleFonts.lexend(
                                                           fontSize: isSmall
                                                               ? 18.sp
@@ -322,7 +322,7 @@ class _spin_screenState extends State<spin_screen> {
                                               ),
                                             ),
                                           ),
-                                          collectedList.contains(dataProvider.spinList['data'][index]['id'])
+                                          collectedList.contains(dataProvider.spinList['data'][index]['codeurl'])
                                               ? Container(
                                                   child: ClipRRect(
                                                     borderRadius: BorderRadius.circular(5.r),
@@ -369,7 +369,7 @@ class _spin_screenState extends State<spin_screen> {
                                     children: [
                                       SizedBox(height: 10.h),
                                       Text(
-                                        '${dataProvider.spinList['data'][spinIndex]['spinDate']}',
+                                        '${dataProvider.spinList['data'][spinIndex]['date']}',
                                         style: GoogleFonts.lexend(
                                           fontSize: 25.sp,
                                           color: Colors.white,
@@ -387,7 +387,7 @@ class _spin_screenState extends State<spin_screen> {
                                           ),
                                           SizedBox(width: 15.w),
                                           Text(
-                                            '${dataProvider.spinList['data'][spinIndex]['subject']}',
+                                            '${dataProvider.spinList['data'][spinIndex]['title']}',
                                             style: GoogleFonts.lexend(
                                               fontSize: 25.sp,
                                               color: Colors.white,
@@ -400,7 +400,7 @@ class _spin_screenState extends State<spin_screen> {
                                       Padding(
                                         padding: EdgeInsets.symmetric(horizontal: 20.sp),
                                         child: Text(
-                                          '${dataProvider.spinList['data'][spinIndex]['detail']}',
+                                          '${dataProvider.spinList['data'][spinIndex]['description']}',
                                           style: GoogleFonts.lexend(
                                             fontSize: 18.sp,
                                             color: Colors.white,
@@ -443,7 +443,7 @@ class _spin_screenState extends State<spin_screen> {
                                                 ),
                                               ),
                                             ),
-                                            if (collectedList.contains(dataProvider.spinList['data'][spinIndex]['id'])) ...{
+                                            if (collectedList.contains(dataProvider.spinList['data'][spinIndex]['codeurl'])) ...{
                                               Container(
                                                 height: 40.sp,
                                                 width: 105.w,
@@ -467,17 +467,25 @@ class _spin_screenState extends State<spin_screen> {
                                             } else ...{
                                               GestureDetector(
                                                 onTap: () async {
+                                                  if (dataProvider.soundOn == true) {
+                                                    dataProvider.initOnTap();
+                                                  }
                                                   AdsRN().showFullScreen(
                                                     context: context,
                                                     onComplete: () {
-                                                      if (dataProvider.soundOn == true) {
-                                                        dataProvider.initOnTap();
+                                                      if (context.read<MainJson>().data![context.read<MainJson>().version]['rewardCollect'] == true) {
+                                                        dataProvider.url = dataProvider.spinList['data'][spinIndex]['codeurl'];
+                                                        collectedList.add(dataProvider.spinList['data'][spinIndex]['codeurl']);
+                                                        dataProvider.launchurl();
+                                                        storage.write("collectedList", collectedList);
+                                                        setState(() {});
+                                                      } else {
+                                                        dataProvider.coin = dataProvider.coin +
+                                                            int.parse(dataProvider.spinList['data'][spinIndex]['title'].toString().substring(0, 2));
+                                                        storage.write("coin", dataProvider.coin);
+                                                        collectedList.add(dataProvider.spinList['data'][spinIndex]['codeurl']);
+                                                        storage.write("collectedList", collectedList);
                                                       }
-                                                      dataProvider.coin = dataProvider.coin + int.parse(dataProvider.spinList['data'][spinIndex]['codeUrl']);
-                                                      storage.write("coin", dataProvider.coin);
-                                                      collectedList.add(dataProvider.spinList['data'][spinIndex]['id']);
-                                                      storage.write("collectedList", collectedList);
-                                                      print("collectedList ====>> ${collectedList}");
                                                       collectDialog = false;
                                                       setState(() {});
                                                     },

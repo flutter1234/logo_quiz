@@ -23,7 +23,9 @@ class _levels_screenState extends State<levels_screen> {
   void initState() {
     super.initState();
     Api dataProvider = Provider.of<Api>(context, listen: false);
-    dataProvider.mainLevel = List.filled(dataProvider.wordList['word'].length, false);
+    dataProvider.lockList = storage.read("lockList") ?? [];
+    dataProvider.lockList.isEmpty ? dataProvider.lockList.add("LEVEL 1") : dataProvider.lockList;
+    storage.write("lockList", dataProvider.lockList);
     dataProvider.coin = storage.read("coin") ?? 0;
     dataProvider.star = storage.read("star") ?? 0;
   }
@@ -179,153 +181,179 @@ class _levels_screenState extends State<levels_screen> {
                   itemBuilder: (context, index) {
                     List completeLogo = storage.read("LEVEL ${index + 1}") ?? [];
                     return GestureDetector(
-                      onTap: () {
-                        AdsRN().showFullScreen(
-                          context: context,
-                          onComplete: () {
-                            if (dataProvider.soundOn == true) {
-                              dataProvider.initOnTap();
+                      onTap: dataProvider.lockList.contains('LEVEL ${index + 1}')
+                          ? () {
+                              if (dataProvider.soundOn == true) {
+                                dataProvider.initOnTap();
+                              }
+                              AdsRN().showFullScreen(
+                                context: context,
+                                onComplete: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    logo_category_screen.routeName,
+                                    arguments: {
+                                      "logoData": dataProvider.wordList['word'][index]['Level ${index + 1}'],
+                                      "Index": index,
+                                    },
+                                  ).then((value) {
+                                    setState(() {
+                                      completeLogo = storage.read("LEVEL ${index + 1}") ?? [];
+                                    });
+                                  });
+                                },
+                              );
                             }
-                            Navigator.pushNamed(
-                              context,
-                              logo_category_screen.routeName,
-                              arguments: {
-                                "logoData": dataProvider.wordList['word'][index]['Level ${index + 1}'],
-                                "Index": index,
-                              },
-                            ).then((value) {
-                              setState(() {
-                                completeLogo = storage.read("LEVEL ${index + 1}") ?? [];
-                              });
-                            });
-                          },
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.topRight,
-                            colors: [
-                              dataProvider.levelContainer1,
-                              dataProvider.levelContainer2,
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: dataProvider.levelContainer2,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                          border: Border.all(width: 0.3.w, color: Colors.white70),
-                          borderRadius: BorderRadius.circular(5.r),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 5.sp),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Center(
-                                child: Container(
-                                  height: 100.sp,
-                                  width: 100.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.r),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(9.r),
-                                    child: CachedNetworkImage(
-                                      imageUrl: dataProvider.wordList['word'][index]['image'],
-                                      fit: BoxFit.cover,
-                                      errorWidget: (context, url, error) => Icon(
-                                        Icons.error,
-                                        color: Colors.white,
-                                        size: 25.sp,
-                                      ),
-                                      placeholder: (context, url) => Container(
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white,
-                                            strokeWidth: 2.w,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 10.w),
-                                child: Text(
-                                  "LEVEL ${index + 1}",
-                                  style: GoogleFonts.lexend(
-                                    fontSize: isSmall
-                                        ? 16.sp
-                                        : isIpad
-                                            ? 15.sp
-                                            : 18.sp,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                              Stack(
-                                alignment: Alignment.centerRight,
-                                clipBehavior: Clip.none,
-                                children: [
-                                  LinearPercentIndicator(
-                                    width: 150.w,
-                                    lineHeight: 15.sp,
-                                    barRadius: Radius.circular(10.r),
-                                    percent: completeLogo.length / dataProvider.wordList['word'][index]['Level ${index + 1}'].length,
-                                    backgroundColor: Colors.black26,
-                                    progressColor: Colors.green,
-                                    center: (completeLogo.length != dataProvider.wordList['word'][index]['Level ${index + 1}'].length)
-                                        ? Text(
-                                            "${completeLogo.length}/${dataProvider.wordList['word'][index]['Level ${index + 1}'].length}",
-                                            style: GoogleFonts.lexend(
-                                              fontSize: isSmall
-                                                  ? 10.sp
-                                                  : isIpad
-                                                      ? 10.sp
-                                                      : 12.sp,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          )
-                                        : Text(
-                                            "Done",
-                                            style: GoogleFonts.lexend(
-                                              fontSize: isSmall
-                                                  ? 10.sp
-                                                  : isIpad
-                                                      ? 10.sp
-                                                      : 12.sp,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                  ),
-                                  if (completeLogo.length == dataProvider.wordList['word'][index]['Level ${index + 1}'].length)
-                                    Positioned(
-                                      right: 10.w,
-                                      child: Container(
-                                        height: 22.sp,
-                                        width: 22.sp,
-                                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.green),
-                                        child: Icon(
-                                          Icons.check,
-                                          size: 15.sp,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
+                          : () {},
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomLeft,
+                                end: Alignment.topRight,
+                                colors: [
+                                  dataProvider.levelContainer1,
+                                  dataProvider.levelContainer2,
                                 ],
                               ),
-                            ],
+                              boxShadow: [
+                                BoxShadow(
+                                  color: dataProvider.levelContainer2,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                              border: Border.all(width: 0.3.w, color: Colors.white70),
+                              borderRadius: BorderRadius.circular(5.r),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 5.sp),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Center(
+                                    child: Container(
+                                      height: 100.sp,
+                                      width: 100.w,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.r),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(9.r),
+                                        child: CachedNetworkImage(
+                                          imageUrl: dataProvider.wordList['word'][index]['image'],
+                                          fit: BoxFit.cover,
+                                          errorWidget: (context, url, error) => Icon(
+                                            Icons.error,
+                                            color: Colors.white,
+                                            size: 25.sp,
+                                          ),
+                                          placeholder: (context, url) => Container(
+                                            child: Center(
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                                strokeWidth: 2.w,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 10.w),
+                                    child: Text(
+                                      "LEVEL ${index + 1}",
+                                      style: GoogleFonts.lexend(
+                                        fontSize: isSmall
+                                            ? 16.sp
+                                            : isIpad
+                                                ? 15.sp
+                                                : 18.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                  Stack(
+                                    alignment: Alignment.centerRight,
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      LinearPercentIndicator(
+                                        width: 150.w,
+                                        lineHeight: 15.sp,
+                                        barRadius: Radius.circular(10.r),
+                                        percent: completeLogo.length / dataProvider.wordList['word'][index]['Level ${index + 1}'].length,
+                                        backgroundColor: Colors.black26,
+                                        progressColor: Colors.green,
+                                        center: (completeLogo.length != dataProvider.wordList['word'][index]['Level ${index + 1}'].length)
+                                            ? Text(
+                                                "${completeLogo.length}/${dataProvider.wordList['word'][index]['Level ${index + 1}'].length}",
+                                                style: GoogleFonts.lexend(
+                                                  fontSize: isSmall
+                                                      ? 10.sp
+                                                      : isIpad
+                                                          ? 10.sp
+                                                          : 12.sp,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              )
+                                            : Text(
+                                                "Done",
+                                                style: GoogleFonts.lexend(
+                                                  fontSize: isSmall
+                                                      ? 10.sp
+                                                      : isIpad
+                                                          ? 10.sp
+                                                          : 12.sp,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                      ),
+                                      if (completeLogo.length == dataProvider.wordList['word'][index]['Level ${index + 1}'].length)
+                                        Positioned(
+                                          right: 10.w,
+                                          child: Container(
+                                            height: 22.sp,
+                                            width: 22.sp,
+                                            decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.green),
+                                            child: Icon(
+                                              Icons.check,
+                                              size: 15.sp,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                          if (!dataProvider.lockList.contains('LEVEL ${index + 1}')) ...{
+                            Positioned(
+                              child: Container(
+                                width: 1.sw,
+                                height: 1.sh,
+                                decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  border: Border.all(width: 0.3.w, color: Colors.white70),
+                                  borderRadius: BorderRadius.circular(5.r),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(isSmall ? 45.sp : 40.sp),
+                                  child: Image(
+                                    image: AssetImage('assets/images/lock.png'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          }
+                        ],
                       ),
                     );
                   },

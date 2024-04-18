@@ -19,7 +19,6 @@ class Api extends ChangeNotifier {
   String spinJson = "";
   Map spinList = {};
   ScreenshotController screenshotController = ScreenshotController();
-  List mainLevel = [];
   List subLevel = [];
   bool themeChangeDialog = false;
   Color backGround = HexColor('023E8A');
@@ -37,6 +36,8 @@ class Api extends ChangeNotifier {
   bool statisticsDialog = false;
   int totalHint = 0;
   int levelLength = 0;
+  int failedAttempts = 0;
+  List lockList = [];
 
   Future<void> logoQuiz(var Url) async {
     var url = Uri.parse(Url);
@@ -59,14 +60,18 @@ class Api extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> shareImage() async {
+  Future<void> shareImage(context) async {
     await screenshotController.capture(delay: const Duration(milliseconds: 10)).then(
       (Uint8List? image) async {
         if (image != null) {
           final directory = await getApplicationDocumentsDirectory();
           final imagePath = await File('${directory.path}/image.png').create();
           await imagePath.writeAsBytes(image);
-          await Share.shareFiles([imagePath.path]);
+          final box = context.findRenderObject() as RenderBox?;
+          await Share.shareFiles(
+            [imagePath.path],
+            sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+          );
         }
       },
     );

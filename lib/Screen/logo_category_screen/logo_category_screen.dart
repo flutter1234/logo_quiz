@@ -7,6 +7,7 @@ import 'package:logo_quiz/AdPlugin/Ads/FullScreen/Ads.dart';
 import 'package:logo_quiz/Provider/api_provider.dart';
 import 'package:logo_quiz/Screen/one_logo_screen/one_logo_screen.dart';
 import 'package:logo_quiz/main.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 class logo_category_screen extends StatefulWidget {
@@ -29,7 +30,6 @@ class _logo_category_screenState extends State<logo_category_screen> {
       data = ModalRoute.of(context)!.settings.arguments;
       dataProvider.subLevel = List.filled(data['logoData'].length, false);
       completeLogo = storage.read("LEVEL ${data['Index'] + 1}") ?? [];
-      print("completeLogo ===>>${"LEVEL ${data['Index'] + 1}"}");
       dataProvider.coin = storage.read("coin") ?? 0;
       dataProvider.star = storage.read("star") ?? 0;
       setState(() {});
@@ -194,8 +194,29 @@ class _logo_category_screenState extends State<logo_category_screen> {
                 ),
               ),
               SizedBox(
-                height: 10.h,
+                height: 5.h,
               ),
+              LinearPercentIndicator(
+                lineHeight: 15.sp,
+                padding: EdgeInsets.symmetric(horizontal: 60.sp),
+                barRadius: Radius.circular(10.r),
+                percent: completeLogo.length / data['logoData'].length,
+                backgroundColor: Colors.black26,
+                progressColor: Colors.green,
+                center: Text(
+                  "${completeLogo.length}/${data['logoData'].length}",
+                  style: GoogleFonts.lexend(
+                    fontSize: isSmall
+                        ? 10.sp
+                        : isIpad
+                            ? 10.sp
+                            : 12.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              SizedBox(height: 15.h),
               Expanded(
                 child: GridView.builder(
                   itemCount: data['logoData'].length,
@@ -209,12 +230,12 @@ class _logo_category_screenState extends State<logo_category_screen> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
+                        if (dataProvider.soundOn == true) {
+                          dataProvider.initOnTap();
+                        }
                         AdsRN().showFullScreen(
                           context: context,
                           onComplete: () {
-                            if (dataProvider.soundOn == true) {
-                              dataProvider.initOnTap();
-                            }
                             Navigator.pushNamed(
                               context,
                               one_logo_screen.routeName,

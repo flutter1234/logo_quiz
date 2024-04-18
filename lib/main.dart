@@ -36,34 +36,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  // Widget build(BuildContext context) {
-  //   double screenWidth = MediaQuery.of(context).size.width;
-  //   if (screenWidth > 600) {
-  //     isIpad = true;
-  //   } else if (screenWidth < 420) {
-  //     isSmall = true;
-  //   }
-  //   return MultiProvider(
-  //     providers: [
-  //       ChangeNotifierProvider(create: (context) => Api()),
-  //     ],
-  //     child: ScreenUtilInit(
-  //       designSize: const Size(360, 690),
-  //       minTextAdapt: true,
-  //       splitScreenMode: true,
-  //       builder: (context, child) {
-  //         return MaterialApp(
-  //           onGenerateRoute: r.Router.onRouteGenrator,
-  //           debugShowCheckedModeBanner: false,
-  //           theme: ThemeData(
-  //             scaffoldBackgroundColor: Api().backGround,
-  //           ),
-  //           home: splash_screen(),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
   Widget build(BuildContext context) {
     DartPingIOS.register();
     double screenWidth = MediaQuery.of(context).size.width;
@@ -102,9 +74,6 @@ class _MyAppState extends State<MyApp> {
                     ],
                     version: '1.0.0',
                     child: const splash_screen()),
-                // theme: ThemeData(
-                //   scaffoldBackgroundColor: Api().backGround,
-                // ),
                 navigatorKey: NavigationService.navigatorKey,
                 onGenerateRoute: r.Router.onRouteGenrator,
                 debugShowCheckedModeBanner: false,
