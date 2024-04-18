@@ -50,7 +50,7 @@ class _logo_category_screenState extends State<logo_category_screen> {
         body: Padding(
           padding: EdgeInsets.only(
             top: isSmall
-                ? 30.h
+                ? 45.h
                 : isIpad
                     ? 30.h
                     : 50.h,

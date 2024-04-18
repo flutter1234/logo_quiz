@@ -140,7 +140,7 @@ class _one_logo_screenState extends State<one_logo_screen> {
       body: Padding(
         padding: EdgeInsets.only(
           top: isSmall
-              ? 30.h
+              ? 45.h
               : isIpad
                   ? 30.h
                   : 50.h,

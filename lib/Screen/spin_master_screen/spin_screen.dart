@@ -56,7 +56,7 @@ class _spin_screenState extends State<spin_screen> {
                   Padding(
                     padding: EdgeInsets.only(
                       top: isSmall
-                          ? 30.h
+                          ? 45.h
                           : isIpad
                               ? 30.h
                               : 50.h,
@@ -255,7 +255,7 @@ class _spin_screenState extends State<spin_screen> {
                                       child: Stack(
                                         children: [
                                           Container(
-                                            height: 60.sp,
+                                            height: 65.sp,
                                             width: 1.sw,
                                             decoration: BoxDecoration(
                                               border: Border.all(width: 1.w, color: Colors.white),
@@ -329,7 +329,7 @@ class _spin_screenState extends State<spin_screen> {
                                                     child: BackdropFilter(
                                                       filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                                                       child: Container(
-                                                        height: 60.sp,
+                                                        height: 65.sp,
                                                         width: 1.sw,
                                                         color: Colors.black.withOpacity(0.3),
                                                       ),

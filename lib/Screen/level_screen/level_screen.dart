@@ -40,10 +40,10 @@ class _levels_screenState extends State<levels_screen> {
         body: Padding(
           padding: EdgeInsets.only(
             top: isSmall
-                ? 30.h
+                ? 45.h
                 : isIpad
-                    ? 30.h
-                    : 50.h,
+                ? 30.h
+                : 50.h,
           ),
           child: Column(
             children: [

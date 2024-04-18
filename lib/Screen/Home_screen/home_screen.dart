@@ -76,7 +76,7 @@ class _home_screenState extends State<home_screen> {
                 : Padding(
                     padding: EdgeInsets.only(
                       top: isSmall
-                          ? 25.h
+                          ? 45.h
                           : isIpad
                               ? 30.h
                               : 50.h,
@@ -213,7 +213,7 @@ class _home_screenState extends State<home_screen> {
                               "LOGO GAME",
                               style: GoogleFonts.lexend(
                                 fontSize: isIpad
-                                    ? 25.sp
+                                    ? 20.sp
                                     : isSmall
                                         ? 22.sp
                                         : 30.sp,
@@ -231,7 +231,7 @@ class _home_screenState extends State<home_screen> {
                               "Quiz your brands knowledge",
                               style: GoogleFonts.lexend(
                                 fontSize: isIpad
-                                    ? 18.sp
+                                    ? 16.sp
                                     : isSmall
                                         ? 18.sp
                                         : 20.sp,
@@ -258,12 +258,12 @@ class _home_screenState extends State<home_screen> {
                                   padding: EdgeInsets.only(left: 10.w, top: isSmall ? 5.h : 10.h),
                                   child: Container(
                                     height: isIpad
-                                        ? 40.sp
+                                        ? 35.sp
                                         : isSmall
                                             ? 40.sp
                                             : 45.sp,
                                     width: isIpad
-                                        ? 40.w
+                                        ? 35.w
                                         : isSmall
                                             ? 40.w
                                             : 45.w,
@@ -280,6 +280,7 @@ class _home_screenState extends State<home_screen> {
                                 ),
                               ),
                             ),
+                            Spacer(),
                             dataProvider.themeChangeDialog == true
                                 ? Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 25.sp),
@@ -313,10 +314,18 @@ class _home_screenState extends State<home_screen> {
                                                     setState(() {});
                                                   },
                                                   child: Padding(
-                                                    padding: EdgeInsets.all(5.sp),
+                                                    padding: EdgeInsets.all(isIpad ? 3.sp : 5.sp),
                                                     child: Container(
-                                                      height: isSmall ? 40.sp : 45.sp,
-                                                      width: isSmall ? 40.w : 45.w,
+                                                      height: isSmall
+                                                          ? 40.sp
+                                                          : isIpad
+                                                              ? 38.sp
+                                                              : 45.sp,
+                                                      width: isSmall
+                                                          ? 40.w
+                                                          : isIpad
+                                                              ? 38.sp
+                                                              : 45.w,
                                                       decoration: BoxDecoration(
                                                         color: HexColor('023E8A'),
                                                         shape: BoxShape.circle,
@@ -344,10 +353,18 @@ class _home_screenState extends State<home_screen> {
                                                     setState(() {});
                                                   },
                                                   child: Padding(
-                                                    padding: EdgeInsets.all(5.sp),
+                                                    padding: EdgeInsets.all(isIpad ? 3.sp : 5.sp),
                                                     child: Container(
-                                                      height: isSmall ? 40.sp : 45.sp,
-                                                      width: isSmall ? 40.w : 45.w,
+                                                      height: isSmall
+                                                          ? 40.sp
+                                                          : isIpad
+                                                              ? 38.sp
+                                                              : 45.sp,
+                                                      width: isSmall
+                                                          ? 40.w
+                                                          : isIpad
+                                                              ? 38.sp
+                                                              : 45.w,
                                                       decoration: BoxDecoration(
                                                         color: HexColor('79305a'),
                                                         shape: BoxShape.circle,
@@ -375,10 +392,18 @@ class _home_screenState extends State<home_screen> {
                                                     setState(() {});
                                                   },
                                                   child: Padding(
-                                                    padding: EdgeInsets.all(5.sp),
+                                                    padding: EdgeInsets.all(isIpad ? 3.sp : 5.sp),
                                                     child: Container(
-                                                      height: isSmall ? 40.sp : 45.sp,
-                                                      width: isSmall ? 40.w : 45.w,
+                                                      height: isSmall
+                                                          ? 40.sp
+                                                          : isIpad
+                                                              ? 38.sp
+                                                              : 45.sp,
+                                                      width: isSmall
+                                                          ? 40.w
+                                                          : isIpad
+                                                              ? 38.sp
+                                                              : 45.w,
                                                       decoration: BoxDecoration(
                                                         color: HexColor('2d3b43'),
                                                         shape: BoxShape.circle,
@@ -405,10 +430,18 @@ class _home_screenState extends State<home_screen> {
                                                     setState(() {});
                                                   },
                                                   child: Padding(
-                                                    padding: EdgeInsets.all(5.sp),
+                                                    padding: EdgeInsets.all(isIpad ? 3.sp : 5.sp),
                                                     child: Container(
-                                                      height: isSmall ? 40.sp : 45.sp,
-                                                      width: isSmall ? 40.w : 45.w,
+                                                      height: isSmall
+                                                          ? 40.sp
+                                                          : isIpad
+                                                              ? 38.sp
+                                                              : 45.sp,
+                                                      width: isSmall
+                                                          ? 40.w
+                                                          : isIpad
+                                                              ? 38.sp
+                                                              : 45.w,
                                                       decoration: BoxDecoration(
                                                         color: HexColor('d24e01'),
                                                         shape: BoxShape.circle,
@@ -438,8 +471,16 @@ class _home_screenState extends State<home_screen> {
                                                     });
                                                   },
                                                   child: Container(
-                                                    height: isSmall ? 25.sp : 30.sp,
-                                                    width: isSmall ? 25.sp : 30.w,
+                                                    height: isSmall
+                                                        ? 25.sp
+                                                        : isIpad
+                                                            ? 25.sp
+                                                            : 30.sp,
+                                                    width: isSmall
+                                                        ? 25.sp
+                                                        : isIpad
+                                                            ? 25.w
+                                                            : 30.w,
                                                     decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.circular(6.r),
                                                         color: dataProvider.levelContainer2,
@@ -457,6 +498,7 @@ class _home_screenState extends State<home_screen> {
                                     ),
                                   )
                                 : SizedBox(),
+                            Spacer(),
                           ],
                         ),
                         NativeRN(parentContext: context),
@@ -490,7 +532,7 @@ class _home_screenState extends State<home_screen> {
                                       : 200.w,
                               decoration: BoxDecoration(
                                 color: dataProvider.levelContainer2,
-                                borderRadius: BorderRadius.circular(isIpad ? 40.r : 15.r),
+                                borderRadius: BorderRadius.circular(isIpad ? 12.r : 14.r),
                                 border: Border.all(width: 2.w, color: Colors.white),
                               ),
                               child: Row(
@@ -498,7 +540,7 @@ class _home_screenState extends State<home_screen> {
                                 children: [
                                   Image(
                                     image: AssetImage('assets/images/coin.png'),
-                                    height: 35.sp,
+                                    height: isSmall ? 30.sp : 35.sp,
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(left: 5.w),
@@ -508,7 +550,7 @@ class _home_screenState extends State<home_screen> {
                                         fontSize: isIpad
                                             ? 25.sp
                                             : isSmall
-                                                ? 24.sp
+                                                ? 22.sp
                                                 : 28.sp,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w700,
@@ -549,7 +591,7 @@ class _home_screenState extends State<home_screen> {
                                       : 200.w,
                               decoration: BoxDecoration(
                                 color: dataProvider.levelContainer2,
-                                borderRadius: BorderRadius.circular(isIpad ? 40.r : 15.r),
+                                borderRadius: BorderRadius.circular(isIpad ? 12.r : 14.r),
                                 border: Border.all(width: 2.w, color: Colors.white),
                               ),
                               child: Row(
@@ -557,17 +599,17 @@ class _home_screenState extends State<home_screen> {
                                 children: [
                                   Image(
                                     image: AssetImage('assets/images/play.png'),
-                                    height: 35.sp,
+                                    height: isSmall ? 30.sp : 35.sp,
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(left: 10.w, right: 20.w),
+                                    padding: EdgeInsets.only(left: isSmall ? 10.w : 10.w, right: isSmall ? 30.w : 20.w),
                                     child: Text(
                                       "Play",
                                       style: GoogleFonts.lexend(
                                         fontSize: isIpad
                                             ? 25.sp
                                             : isSmall
-                                                ? 24.sp
+                                                ? 22.sp
                                                 : 30.sp,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w700,
@@ -994,7 +1036,7 @@ class _home_screenState extends State<home_screen> {
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 25.sp, vertical: 10.sp),
                                 child: Container(
-                                  height: 70.sp,
+                                  height: 75.sp,
                                   width: 1.sw,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.r),
@@ -1014,7 +1056,7 @@ class _home_screenState extends State<home_screen> {
                                                     ? 12.sp
                                                     : isSmall
                                                         ? 14.sp
-                                                        : 16.sp,
+                                                        : 14.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w900,
                                               ),
@@ -1026,7 +1068,7 @@ class _home_screenState extends State<home_screen> {
                                                     ? 12.sp
                                                     : isSmall
                                                         ? 14.sp
-                                                        : 16.sp,
+                                                        : 14.sp,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -1141,7 +1183,7 @@ class _home_screenState extends State<home_screen> {
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 25.sp, vertical: 10.sp),
                                 child: Container(
-                                  height: 50.sp,
+                                  height: 52.sp,
                                   width: 1.sw,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.r),
